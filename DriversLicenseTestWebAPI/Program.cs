@@ -18,7 +18,49 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>()
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
+    {
+        Title = "Auth",
+        Version = "v1"
+    });
+
+    options.AddSecurityDefinition("cookieAuth", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+    {
+        Name = ".AspNetCore.Identity.Application",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        In = Microsoft.OpenApi.Models.ParameterLocation.Cookie,
+        Description = "Cookie-based auth - logs in via Identity and sends session cookie"
+    });
+
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "cookieAuth"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhostWithCredentials", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5279", "http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -33,6 +75,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 var app = builder.Build();
 
 app.MapIdentityApi<IdentityUser>();
+app.UseCors("AllowLocalhostWithCredentials");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
