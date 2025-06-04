@@ -80,6 +80,7 @@ var app = builder.Build();
 
 app.MapIdentityApi<IdentityUser>();
 app.UseCors("AllowLocalhostWithCredentials");
+app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
