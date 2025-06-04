@@ -1,4 +1,6 @@
 using AuthDemo.Data;
+using DriversLicenseTestWebAPI.interfaces;
+using DriversLicenseTestWebAPI.scraper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -71,6 +73,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireDigit = false;
     options.Password.RequireNonAlphanumeric = false;
 });
+
+builder.Services.AddScoped<IScrapeQuestions, ScrapeQuestions>();
 
 var app = builder.Build();
 

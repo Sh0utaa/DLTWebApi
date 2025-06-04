@@ -1,3 +1,4 @@
+using DriversLicenseTestWebAPI.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,12 @@ namespace DriversLicenseTestWebAPI.controllers
     [ApiController]
     public class QuestionsController : ControllerBase
     {
+        private readonly IScrapeQuestions _scrapeQuestions;
+        public QuestionsController(IScrapeQuestions scrapeQuestions)
+        {
+            _scrapeQuestions = scrapeQuestions;
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetQuestionsAsync()
         {
@@ -32,7 +39,8 @@ namespace DriversLicenseTestWebAPI.controllers
         [HttpGet("scrape")]
         public async Task<IActionResult> ScrapeQuestionsAsync()
         {
-            return Ok();
+            var questions = await _scrapeQuestions.ScrapeAllQuestions();
+            return Ok(questions);
         }
     }
 }
