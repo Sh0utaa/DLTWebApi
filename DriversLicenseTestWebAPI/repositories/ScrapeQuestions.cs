@@ -3,6 +3,7 @@ using AngleSharp;
 using AuthDemo.Data;
 using DriversLicenseTestWebAPI.interfaces;
 using DriversLicenseTestWebAPI.models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DriversLicenseTestWebAPI.repositories
 {
@@ -43,11 +44,9 @@ namespace DriversLicenseTestWebAPI.repositories
 
                     if (ticketContainers.Length == 0)
                     {
-                        Console.WriteLine("No tickets found");
-                        return [];
+                        Console.WriteLine($"No tickets found on page {i}");
+                        continue;
                     }
-
-                    var currentPageQuestions = await _questionRepo.GetQuestionsByPageIndexAsync(i);
 
                     foreach (var container in ticketContainers)
                     {
@@ -69,24 +68,28 @@ namespace DriversLicenseTestWebAPI.repositories
                             });
                         }
 
-                        if (questions.Any(q => q.Id == question.Id))
+                        // Check if question already exists in database
+                        var exists = await _context.Questions
+                            .AnyAsync(q => q.QuestionContent == question.QuestionContent);
+
+                        if (!exists)
                         {
                             await _context.Questions.AddAsync(question);
                             await _context.SaveChangesAsync();
-
                             questions.Add(question);
                         }
+                        else
+                        {
+                            Console.WriteLine($"Question already exists: {question.QuestionContent}");
+                        }
                     }
-
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Scraping failed: {ex.Message}");
-
-                    throw;
+                    Console.WriteLine($"Error scraping page {i}: {ex.Message}");
+                    continue;
                 }
             }
-
 
             return questions;
         }

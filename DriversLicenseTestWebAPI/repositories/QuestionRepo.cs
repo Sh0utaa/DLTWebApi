@@ -124,13 +124,29 @@ namespace DriversLicenseTestWebAPI.repositories
 
                 foreach (var submission in submissions)
                 {
-                    Question question = allQuestions.Where(q => q.Id == submission.QuestionId).FirstOrDefault();
+                    Question question = allQuestions.FirstOrDefault(q => q.Id == submission.QuestionId);
+
+                    if (question == null)
+                    {
+                        Console.WriteLine($"Question with ID {submission.QuestionId} not found");
+                        IncorrectAmount++;
+                        continue;
+                    }
+
+                    if (question.Answers == null || !question.Answers.Any())
+                    {
+                        Console.WriteLine($"No answers found for question with ID {submission.QuestionId}");
+
+                        IncorrectAmount++;
+                        continue;
+                    }
 
                     var selectedAnswer = question.Answers.FirstOrDefault(a => a.Id == submission.AnswerId);
 
                     if (selectedAnswer == null)
                     {
-                        Console.WriteLine("selected answer doesn't exist");
+                        Console.WriteLine($"Selected answer with ID {submission.AnswerId} doesn't exist for question with ID {submission.QuestionId}");
+                        IncorrectAmount++;
                     }
                     else if (selectedAnswer.IsCorrect)
                     {
@@ -142,12 +158,7 @@ namespace DriversLicenseTestWebAPI.repositories
                     }
                 }
 
-                bool Failed = false;
-
-                if (IncorrectAmount > 27)
-                {
-                    Failed = true;
-                }
+                bool Failed = IncorrectAmount > 3;
 
                 ExamSession examSession = new ExamSession()
                 {
