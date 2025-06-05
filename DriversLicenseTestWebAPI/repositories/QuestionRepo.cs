@@ -115,7 +115,7 @@ namespace DriversLicenseTestWebAPI.repositories
                     };
 
                     submissions.Add(sub);
-                    await _context.UserAnswerSubmissions.AddAsync(sub);
+                    // await _context.UserAnswerSubmissions.AddAsync(sub);
                 }
 
                 int CorrectAmount = 0, IncorrectAmount = 0;
@@ -152,6 +152,7 @@ namespace DriversLicenseTestWebAPI.repositories
                     else if (selectedAnswer.IsCorrect)
                     {
                         CorrectAmount++;
+                        submission.IsCorrect = true;
                     }
                     else
                     {
@@ -159,6 +160,8 @@ namespace DriversLicenseTestWebAPI.repositories
                     }
 
                 }
+
+                await _context.UserAnswerSubmissions.AddRangeAsync(submissions);
 
                 bool Failed = IncorrectAmount > 3;
 
