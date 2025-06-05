@@ -9,10 +9,11 @@ namespace DriversLicenseTestWebAPI.repositories
     public class ScrapeQuestions : IScrapeQuestions
     {
         private readonly DataContext _context;
-
-        public ScrapeQuestions(DataContext context)
+        private readonly IQuestionRepo _questionRepo;
+        public ScrapeQuestions(DataContext context, IQuestionRepo questionRepo)
         {
             _context = context;
+            _questionRepo = questionRepo;
         }
 
         private static string CleanText(string input)
@@ -46,10 +47,13 @@ namespace DriversLicenseTestWebAPI.repositories
                         return [];
                     }
 
+                    var currentPageQuestions = await _questionRepo.GetQuestionsByPageIndexAsync(i);
+
                     foreach (var container in ticketContainers)
                     {
                         var question = new Question
                         {
+                            PageIndex = i,
                             Image = container.QuerySelector(".t-image img")?.GetAttribute("src"),
                             QuestionContent = container.QuerySelector(".t-question-inner")?.TextContent?.Trim(),
                             Answers = new List<Answer>()
@@ -65,10 +69,13 @@ namespace DriversLicenseTestWebAPI.repositories
                             });
                         }
 
-                        await _context.Questions.AddAsync(question);
-                        await _context.SaveChangesAsync();
+                        if (questions.Any(q => q.Id == question.Id))
+                        {
+                            await _context.Questions.AddAsync(question);
+                            await _context.SaveChangesAsync();
 
-                        questions.Add(question);
+                            questions.Add(question);
+                        }
                     }
 
                 }

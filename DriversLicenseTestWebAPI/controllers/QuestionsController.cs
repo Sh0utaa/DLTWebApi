@@ -8,31 +8,27 @@ namespace DriversLicenseTestWebAPI.controllers
     public class QuestionsController : ControllerBase
     {
         private readonly IScrapeQuestions _scrapeQuestions;
-        public QuestionsController(IScrapeQuestions scrapeQuestions)
+        private readonly IQuestionRepo _questionRepo;
+        public QuestionsController(IScrapeQuestions scrapeQuestions, IQuestionRepo questionRepo)
         {
             _scrapeQuestions = scrapeQuestions;
+            _questionRepo = questionRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetQuestionsAsync()
         {
-            var questions = await Task.Run(() =>
-            {
-                return new List<string>
-                {
-                    "What is the speed limit in a residential area?",
-                    "When should you yield at a four-way stop?",
-                    "What does a flashing yellow light mean?"
-                };
-            });
+            var questions = await _questionRepo.GetQuestionsAsync();
 
-            return Ok();
+            return Ok(questions);
         }
 
-        [HttpGet("validateAnswers")]
-        public async Task<IActionResult> ValidateAnswers()
+        [HttpGet("by-page/{index}")]
+        public async Task<IActionResult> GetQuestionsByPageIndexAsync(int index)
         {
-            return Ok();
+            var questions = await _questionRepo.GetQuestionsWithAnswersByPageIndexAsync(index);
+
+            return Ok(questions);
         }
 
         [HttpGet("scrape")]

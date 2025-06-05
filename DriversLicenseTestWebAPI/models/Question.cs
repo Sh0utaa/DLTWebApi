@@ -5,6 +5,7 @@ namespace DriversLicenseTestWebAPI.models
     public class Question()
     {
         public int Id { get; set; }
+        public int PageIndex { get; set; }
         public string? Image { get; set; }
         public string QuestionContent { get; set; }
         public List<Answer?> Answers { get; set; }
