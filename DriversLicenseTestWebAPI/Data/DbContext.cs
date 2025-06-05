@@ -1,3 +1,4 @@
+using DriversLicenseTestWebAPI.models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -9,5 +10,19 @@ public class DataContext : IdentityDbContext<IdentityUser>
     public DataContext(DbContextOptions options) : base(options)
     {
 
+    }
+
+    public DbSet<Question> Questions { get; set; }
+    public DbSet<Answer> Answers { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity<Question>()
+        .HasMany(q => q.Answers)
+        .WithOne(a => a.Question)
+        .HasForeignKey(a => a.QuestionId)
+        .OnDelete(DeleteBehavior.Cascade);
     }
 }

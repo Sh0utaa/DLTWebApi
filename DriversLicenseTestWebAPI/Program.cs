@@ -1,6 +1,6 @@
 using AuthDemo.Data;
 using DriversLicenseTestWebAPI.interfaces;
-using DriversLicenseTestWebAPI.scraper;
+using DriversLicenseTestWebAPI.repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

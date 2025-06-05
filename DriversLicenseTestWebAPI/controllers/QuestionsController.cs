@@ -1,5 +1,4 @@
 using DriversLicenseTestWebAPI.interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DriversLicenseTestWebAPI.controllers

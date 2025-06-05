@@ -1,14 +1,17 @@
 
 
+using System.Text.Json.Serialization;
+
 namespace DriversLicenseTestWebAPI.models
 {
     public class Answer
     {
-        public int id { get; set; }
-        public int questionId { get; set; }
-        public string text { get; set; } = "";
-        public bool isCorrect { get; set; }
+        public int Id { get; set; }
+        public int QuestionId { get; set; }
+        public string Text { get; set; } = "";
+        public bool IsCorrect { get; set; }
 
-        public Question? question { get; set; }
+        [JsonIgnore]
+        public Question? Question { get; set; }
     }
 }
