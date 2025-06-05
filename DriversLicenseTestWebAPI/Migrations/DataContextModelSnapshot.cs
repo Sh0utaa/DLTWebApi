@@ -70,7 +70,7 @@ namespace DriversLicenseTestWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExamSession");
+                    b.ToTable("ExamSessions");
                 });
 
             modelBuilder.Entity("DriversLicenseTestWebAPI.models.Question", b =>
@@ -133,7 +133,7 @@ namespace DriversLicenseTestWebAPI.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("UserAnswerSubmission");
+                    b.ToTable("UserAnswerSubmissions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

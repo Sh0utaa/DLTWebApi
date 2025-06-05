@@ -14,6 +14,8 @@ public class DataContext : IdentityDbContext<IdentityUser>
 
     public DbSet<Question> Questions { get; set; }
     public DbSet<Answer> Answers { get; set; }
+    public DbSet<UserAnswerSubmission> UserAnswerSubmissions { get; set; }
+    public DbSet<ExamSession> ExamSessions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
