@@ -16,6 +16,37 @@ namespace DriversLicenseTestWebAPI.repositories
             _context = context;
         }
 
+        public async Task<List<Question>> GetExamQuestions()
+        {
+            try
+            {
+                return await _context.Questions
+                    .Include(q => q.Answers)
+                    .OrderBy(q => Guid.NewGuid())
+                    .Take(30)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting random questions: {ex}");
+                throw;
+            }
+        }
+
+        public async Task<Question?> GetQuestionByIdAsync(int id)
+        {
+            try
+            {
+                return await _context.Questions.Include(q => q.Answers).FirstOrDefaultAsync(q => q.Id == id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting question by ID {id}: {ex}");
+
+                throw;
+            }
+        }
+
         public async Task<List<Question>> GetQuestionsAsync()
         {
             try

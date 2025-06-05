@@ -1,3 +1,4 @@
+using DriversLicenseTestWebAPI.DTOs;
 using DriversLicenseTestWebAPI.interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,42 @@ namespace DriversLicenseTestWebAPI.controllers
             var questions = await _questionRepo.GetQuestionsWithAnswersByPageIndexAsync(index);
 
             return Ok(questions);
+        }
+
+        [HttpGet("by-id/{id}")]
+        public async Task<IActionResult> GetQuestionById(int id)
+        {
+            var question = await _questionRepo.GetQuestionByIdAsync(id);
+
+            return Ok(question);
+        }
+
+        [HttpGet("exam-questions")]
+        public async Task<IActionResult> GetExamQuestions()
+        {
+            var questions = await _questionRepo.GetExamQuestions();
+            List<QuestionDto> questionDtos = new List<QuestionDto>();
+
+            foreach (var question in questions)
+            {
+                var answerDtos = question.Answers.Select(a => new AnswerDto
+                {
+                    Id = a.Id,
+                    Text = a.Text
+                }).ToList();
+
+                var questionDto = new QuestionDto()
+                {
+                    Id = question.Id,
+                    QuestionContent = question.QuestionContent,
+                    Image = question.Image,
+                    Answers = answerDtos
+                };
+
+                questionDtos.Add(questionDto);
+            }
+
+            return Ok(questionDtos);
         }
 
         [HttpGet("scrape")]
