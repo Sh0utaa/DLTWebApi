@@ -1,0 +1,50 @@
+<div class="container">
+  <h2><i class="fa-solid fa-user"></i> Registration</h2>
+
+  <form (ngSubmit)="onSubmit(registrationForm)" #registrationForm="ngForm">
+    
+       
+    <div class="form-group">
+      <label for="email"><i class="fa-solid fa-envelope"></i> Email:</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        ngModel
+        required
+        #email="ngModel"
+        class="form-control"
+      />
+      <div *ngIf="email.invalid && email.touched" class="text-danger">
+        A valid email is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password"><i class="fa-solid fa-key"></i> Password:</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        ngModel
+        required
+        minlength="6"
+        #password="ngModel"
+        class="form-control"
+      />
+      <div *ngIf="password.invalid && password.touched" class="text-danger">
+        Password is required (min 6 characters)
+      </div>
+    </div>
+
+   
+    <button type="submit" [disabled]="!registrationForm.valid" class="btn btn-primary">
+      Submit
+    </button>
+
+   
+    <div id="buttons" style="margin-top: 10px;">
+      <button type="button" class="btn btn-secondary" routerLink="/Login">Login</button>
+    </div>
+  </form>
+</div>
