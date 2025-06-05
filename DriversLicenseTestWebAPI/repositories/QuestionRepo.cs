@@ -115,6 +115,7 @@ namespace DriversLicenseTestWebAPI.repositories
                     };
 
                     submissions.Add(sub);
+                    await _context.UserAnswerSubmissions.AddAsync(sub);
                 }
 
                 int CorrectAmount = 0, IncorrectAmount = 0;
@@ -156,6 +157,7 @@ namespace DriversLicenseTestWebAPI.repositories
                     {
                         IncorrectAmount++;
                     }
+
                 }
 
                 bool Failed = IncorrectAmount > 3;
@@ -169,8 +171,10 @@ namespace DriversLicenseTestWebAPI.repositories
                     Answers = submissions
                 };
 
-                return examSession;
+                await _context.ExamSessions.AddAsync(examSession);
+                await _context.SaveChangesAsync();
 
+                return examSession;
             }
             catch (Exception ex)
             {
