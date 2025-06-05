@@ -89,22 +89,18 @@ namespace DriversLicenseTestWebAPI.controllers
             [FromBody] List<UserAnswerSubmissionDto> submissionDtos
         )
         {
-            string userId = _userManager.GetUserId(User);
-            List<UserAnswerSubmission> submissions = new List<UserAnswerSubmission>();
+            string UserId = _userManager.GetUserId(User);
 
-            foreach (var submissionDto in submissionDtos)
+            ExamSession examSession = await _questionRepo.HandleExamSubmission(submissionDtos, UserId);
+
+            var result = new ExamSessionDto()
             {
-                new UserAnswerSubmission()
-                {
-                    UserId = userId,
-                    QuestionId = submissionDto.QuestionId,
-                    AnswerId = submissionDto.AnswerId
-                };
-            }
+                CorrectAmount = examSession.CorrectAmount,
+                IncorrectAmount = examSession.IncorrectAmount,
+                Failed = examSession.Failed
+            };
 
-            // save and validate answers
-
-            return Ok();
+            return Ok(result);
         }
     }
 }

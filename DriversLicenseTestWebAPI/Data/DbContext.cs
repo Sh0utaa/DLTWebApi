@@ -25,7 +25,23 @@ public class DataContext : IdentityDbContext<IdentityUser>
         .HasForeignKey(a => a.QuestionId)
         .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<UserAnswerSubmission>().HasKey(x => x.Id);
+        builder.Entity<UserAnswerSubmission>()
+            .HasOne(u => u.Question)
+            .WithMany()
+            .HasForeignKey(u => u.QuestionId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<UserAnswerSubmission>()
+            .HasOne(u => u.Answer)
+            .WithMany()
+            .HasForeignKey(u => u.AnswerId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<UserAnswerSubmission>()
+            .HasOne(u => u.ExamSession)
+            .WithMany(e => e.Answers)
+            .HasForeignKey(u => u.SessionId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<UserAnswerSubmission>().Property(x => x.SubmittedAt).HasDefaultValueSql("GETDATE()");
 
@@ -33,7 +49,7 @@ public class DataContext : IdentityDbContext<IdentityUser>
             .HasMany(s => s.Answers)
             .WithOne(a => a.ExamSession)
             .HasForeignKey(a => a.SessionId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
     }
 }

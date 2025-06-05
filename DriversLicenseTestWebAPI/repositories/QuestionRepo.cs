@@ -1,6 +1,7 @@
 
 
 using AuthDemo.Data;
+using DriversLicenseTestWebAPI.DTOs;
 using DriversLicenseTestWebAPI.interfaces;
 using DriversLicenseTestWebAPI.models;
 using Microsoft.EntityFrameworkCore;
@@ -94,10 +95,70 @@ namespace DriversLicenseTestWebAPI.repositories
             }
         }
 
-        public async Task<ExamSession> HandleExamSubmission(List<UserAnswerSubmission> submissions)
+        public async Task<ExamSession> HandleExamSubmission(List<UserAnswerSubmissionDto> submissionDtos, string UserId)
         {
             try
             {
+                if (submissionDtos == null || !submissionDtos.Any())
+                    throw new ArgumentException("No submissions provided");
+
+                List<UserAnswerSubmission> submissions = new List<UserAnswerSubmission>();
+
+                foreach (var submissionDto in submissionDtos)
+                {
+                    var sub = new UserAnswerSubmission()
+                    {
+                        UserId = UserId,
+                        QuestionId = submissionDto.QuestionId,
+                        AnswerId = submissionDto.AnswerId,
+                        IsCorrect = false
+                    };
+
+                    submissions.Add(sub);
+                }
+
+                int CorrectAmount = 0, IncorrectAmount = 0;
+
+                var questionList = await GetQuestionsAsync();
+                var allQuestions = new HashSet<Question>(questionList);
+
+                foreach (var submission in submissions)
+                {
+                    Question question = allQuestions.Where(q => q.Id == submission.QuestionId).FirstOrDefault();
+
+                    var selectedAnswer = question.Answers.FirstOrDefault(a => a.Id == submission.AnswerId);
+
+                    if (selectedAnswer == null)
+                    {
+                        Console.WriteLine("selected answer doesn't exist");
+                    }
+                    else if (selectedAnswer.IsCorrect)
+                    {
+                        CorrectAmount++;
+                    }
+                    else
+                    {
+                        IncorrectAmount++;
+                    }
+                }
+
+                bool Failed = false;
+
+                if (IncorrectAmount > 27)
+                {
+                    Failed = true;
+                }
+
+                ExamSession examSession = new ExamSession()
+                {
+                    UserId = UserId,
+                    CorrectAmount = CorrectAmount,
+                    IncorrectAmount = IncorrectAmount,
+                    Failed = Failed,
+                    Answers = submissions
+                };
+
+                return examSession;
 
             }
             catch (Exception ex)
