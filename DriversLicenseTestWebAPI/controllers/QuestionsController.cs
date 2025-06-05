@@ -1,5 +1,8 @@
 using DriversLicenseTestWebAPI.DTOs;
 using DriversLicenseTestWebAPI.interfaces;
+using DriversLicenseTestWebAPI.models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DriversLicenseTestWebAPI.controllers
@@ -10,10 +13,15 @@ namespace DriversLicenseTestWebAPI.controllers
     {
         private readonly IScrapeQuestions _scrapeQuestions;
         private readonly IQuestionRepo _questionRepo;
-        public QuestionsController(IScrapeQuestions scrapeQuestions, IQuestionRepo questionRepo)
+        private readonly UserManager<IdentityUser> _userManager;
+        public QuestionsController(
+            IScrapeQuestions scrapeQuestions,
+            IQuestionRepo questionRepo,
+            UserManager<IdentityUser> userManager)
         {
             _scrapeQuestions = scrapeQuestions;
             _questionRepo = questionRepo;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -22,22 +30,6 @@ namespace DriversLicenseTestWebAPI.controllers
             var questions = await _questionRepo.GetQuestionsAsync();
 
             return Ok(questions);
-        }
-
-        [HttpGet("by-page/{index}")]
-        public async Task<IActionResult> GetQuestionsByPageIndexAsync(int index)
-        {
-            var questions = await _questionRepo.GetQuestionsWithAnswersByPageIndexAsync(index);
-
-            return Ok(questions);
-        }
-
-        [HttpGet("by-id/{id}")]
-        public async Task<IActionResult> GetQuestionById(int id)
-        {
-            var question = await _questionRepo.GetQuestionByIdAsync(id);
-
-            return Ok(question);
         }
 
         [HttpGet("exam-questions")]
@@ -68,11 +60,51 @@ namespace DriversLicenseTestWebAPI.controllers
             return Ok(questionDtos);
         }
 
+        [HttpGet("by-page/{index}")]
+        public async Task<IActionResult> GetQuestionsByPageIndexAsync(int index)
+        {
+            var questions = await _questionRepo.GetQuestionsWithAnswersByPageIndexAsync(index);
+
+            return Ok(questions);
+        }
+
+        [HttpGet("by-id/{id}")]
+        public async Task<IActionResult> GetQuestionById(int id)
+        {
+            var question = await _questionRepo.GetQuestionByIdAsync(id);
+
+            return Ok(question);
+        }
+
         [HttpGet("scrape")]
         public async Task<IActionResult> ScrapeQuestionsAsync()
         {
             var questions = await _scrapeQuestions.ScrapeAllQuestions();
             return Ok(questions);
+        }
+
+        [HttpPost("submit")]
+        [Authorize]
+        public async Task<IActionResult> SubmitAnswers(
+            [FromBody] List<UserAnswerSubmissionDto> submissionDtos
+        )
+        {
+            string userId = _userManager.GetUserId(User);
+            List<UserAnswerSubmission> submissions = new List<UserAnswerSubmission>();
+
+            foreach (var submissionDto in submissionDtos)
+            {
+                new UserAnswerSubmission()
+                {
+                    UserId = userId,
+                    QuestionId = submissionDto.QuestionId,
+                    AnswerId = submissionDto.AnswerId
+                };
+            }
+
+            // save and validate answers
+
+            return Ok();
         }
     }
 }

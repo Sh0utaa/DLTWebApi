@@ -93,5 +93,19 @@ namespace DriversLicenseTestWebAPI.repositories
                 throw;
             }
         }
+
+        public async Task<ExamSession> HandleExamSubmission(List<UserAnswerSubmission> submissions)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error happened while handiling submissions: {ex}");
+
+                throw;
+            }
+        }
     }
 }

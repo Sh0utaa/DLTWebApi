@@ -24,5 +24,16 @@ public class DataContext : IdentityDbContext<IdentityUser>
         .WithOne(a => a.Question)
         .HasForeignKey(a => a.QuestionId)
         .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserAnswerSubmission>().HasKey(x => x.Id);
+
+        builder.Entity<UserAnswerSubmission>().Property(x => x.SubmittedAt).HasDefaultValueSql("GETDATE()");
+
+        builder.Entity<ExamSession>()
+            .HasMany(s => s.Answers)
+            .WithOne(a => a.ExamSession)
+            .HasForeignKey(a => a.SessionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
     }
 }
