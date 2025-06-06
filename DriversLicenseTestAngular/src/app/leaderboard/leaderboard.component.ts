@@ -17,7 +17,7 @@ export class LeaderboardComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.http.get<any[]>('http://localhost:5279/leaderboard', {
+    this.http.get<any[]>('http://localhost:5279/api/leaderboards/rates', {
       withCredentials: true
     }).subscribe({
       next: (data) => {

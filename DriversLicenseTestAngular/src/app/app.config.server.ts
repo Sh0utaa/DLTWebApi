@@ -1,4 +1,3 @@
-import { provideServerRouting } from '@angular/ssr';
 import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
 import { appConfig } from './app.config';
 import { provideServerRendering } from '@angular/platform-server';
