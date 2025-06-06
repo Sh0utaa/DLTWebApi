@@ -34,7 +34,7 @@ namespace DriversLicenseTestWebAPI.controllers
         }
 
         [HttpGet("exam-questions")]
-        // [Authorize(Policy = "AuthenticatedUser")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> GetExamQuestions()
         {
             var questions = await _questionRepo.GetExamQuestions();
@@ -89,7 +89,7 @@ namespace DriversLicenseTestWebAPI.controllers
         }
 
         [HttpPost("submit")]
-        // [Authorize(Policy = "AuthenticatedUser")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> SubmitAnswers(
             [FromBody] List<UserAnswerSubmissionDto> submissionDtos
         )

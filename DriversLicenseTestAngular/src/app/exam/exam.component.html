@@ -1,1 +1,103 @@
-<p>exam works!</p>
+<!-- exam.component.html -->
+<div class="container mt-5" *ngIf="!isLoading && !error && !quizCompleted">
+  <div *ngIf="questions.length > 0">
+    <div class="card">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}</h5>
+        <div class="progress" style="width: 200px; height: 20px;">
+          <div class="progress-bar" role="progressbar" [style.width.%]="progressPercentage"></div>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <h4 class="card-title">{{ currentQuestion?.questionContent }}</h4>
+        
+        <div *ngIf="hasImage" class="text-center my-4">
+          <img [src]="currentQuestion!.image" alt="Question image" class="img-fluid rounded" style="width: 50%;">
+        </div>
+        
+        <div class="list-group mb-4">
+          <label *ngFor="let answer of currentQuestion?.answers" class="list-group-item">
+            <input 
+              type="radio" 
+              name="answer" 
+              [id]="'answer-' + answer.id" 
+              [value]="answer.id" 
+              [(ngModel)]="selectedAnswerId"
+              (change)="selectAnswer(answer.id)"
+              class="form-check-input me-2"
+            >
+            {{ answer.text }}
+          </label>
+        </div>
+        
+        <div class="d-flex justify-content-between">
+          <button 
+            (click)="prevQuestion()" 
+            [disabled]="currentQuestionIndex === 0"
+            class="btn btn-secondary"
+          >
+            Previous
+          </button>
+          
+          <button 
+            (click)="nextQuestion()" 
+            [disabled]="selectedAnswerId === null"
+            class="btn btn-primary"
+          >
+            {{ currentQuestionIndex < questions.length - 1 ? 'Next' : 'Submit All Answers' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="quizCompleted && submissionResult" class="container mt-5 text-center">
+  <div class="card">
+    <div class="card-header" 
+         [class.bg-success]="(submissionResult.correctAmount / questions.length) >= 0.7" 
+         [class.bg-warning]="(submissionResult.correctAmount / questions.length) >= 0.5 && (submissionResult.correctAmount / questions.length) < 0.7" 
+         [class.bg-danger]="(submissionResult.correctAmount / questions.length) < 0.5">
+      <h2 class="mb-0 text-white">Quiz Results</h2>
+    </div>
+    <div class="card-body">
+      <div class="display-4 mb-4">
+        {{ submissionResult.correctAmount }}/{{ questions.length }}
+      </div>
+      <p class="lead">
+        You answered {{ submissionResult.correctAmount }} questions correctly 
+        ({{ (submissionResult.correctAmount / questions.length * 100).toFixed(0) }}%)
+      </p>
+      <div class="progress mb-4">
+        <div class="progress-bar" 
+             [class.bg-success]="(submissionResult.correctAmount / questions.length) >= 0.7" 
+             [class.bg-warning]="(submissionResult.correctAmount / questions.length) >= 0.5 && (submissionResult.correctAmount / questions.length) < 0.7" 
+             [class.bg-danger]="(submissionResult.correctAmount / questions.length) < 0.5" 
+             [style.width.%]="(submissionResult.correctAmount / questions.length * 100)">
+        </div>
+      </div>
+      <button (click)="restartQuiz()" class="btn btn-primary btn-lg">
+        Restart Quiz
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="container mt-5 text-center">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p class="mt-3">
+    {{ quizCompleted ? 'Submitting answers...' : 'Loading questions...' }}
+  </p>
+</div>
+
+<div *ngIf="error" class="container mt-5">
+  <div class="alert alert-danger" role="alert">
+    {{ error }}
+    <button *ngIf="!quizCompleted" (click)="loadQuestions()" class="btn btn-sm btn-outline-danger ms-3">
+      Retry
+    </button>
+  </div>
+</div>
