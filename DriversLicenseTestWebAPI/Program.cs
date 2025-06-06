@@ -117,6 +117,31 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/openapi/v1.json", "v1");
     });
 }
+
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Response.StatusCode == StatusCodes.Status401Unauthorized)
+    {
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new
+        {
+            Status = 401,
+            Message = "Unauthorized - Please log in"
+        });
+    }
+
+    if (context.Response.StatusCode == StatusCodes.Status403Forbidden)
+    {
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new
+        {
+            Status = 403,
+            Message = "Forbidden - Insufficient permissions"
+        });
+    }
+});
 // app.UseHttpsRedirection();
 
 await HelperFunctions.SeedAdminUserAsync(app.Services);

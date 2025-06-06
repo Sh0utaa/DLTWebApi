@@ -1,4 +1,5 @@
 using DriversLicenseTestWebAPI.interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DriversLicenseTestWebAPI.controllers
@@ -14,6 +15,7 @@ namespace DriversLicenseTestWebAPI.controllers
         }
 
         [HttpGet("rates")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetExamPassRates()
         {
             try

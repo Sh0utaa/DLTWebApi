@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Shotesko\\Desktop\\DLTProj\\DriversLicenseTestWebAPI\\DriversLicenseTestWebAPI.csproj": {}
+    "c:\\Users\\Shotesko\\Desktop\\DLTProj\\DriversLicenseTestWebAPI\\DriversLicenseTestWebAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Shotesko\\Desktop\\DLTProj\\DriversLicenseTestWebAPI\\DriversLicenseTestWebAPI.csproj": {
+    "c:\\Users\\Shotesko\\Desktop\\DLTProj\\DriversLicenseTestWebAPI\\DriversLicenseTestWebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Shotesko\\Desktop\\DLTProj\\DriversLicenseTestWebAPI\\DriversLicenseTestWebAPI.csproj",
+        "projectUniqueName": "c:\\Users\\Shotesko\\Desktop\\DLTProj\\DriversLicenseTestWebAPI\\DriversLicenseTestWebAPI.csproj",
         "projectName": "DriversLicenseTestWebAPI",
-        "projectPath": "C:\\Users\\Shotesko\\Desktop\\DLTProj\\DriversLicenseTestWebAPI\\DriversLicenseTestWebAPI.csproj",
+        "projectPath": "c:\\Users\\Shotesko\\Desktop\\DLTProj\\DriversLicenseTestWebAPI\\DriversLicenseTestWebAPI.csproj",
         "packagesPath": "C:\\Users\\Shotesko\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Shotesko\\Desktop\\DLTProj\\DriversLicenseTestWebAPI\\obj\\",
+        "outputPath": "c:\\Users\\Shotesko\\Desktop\\DLTProj\\DriversLicenseTestWebAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Shotesko\\AppData\\Roaming\\NuGet\\NuGet.Config",

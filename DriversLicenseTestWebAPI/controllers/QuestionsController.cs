@@ -28,13 +28,6 @@ namespace DriversLicenseTestWebAPI.controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetQuestionsAsync()
         {
-            var userId = _userManager.GetUserId(User);
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-
             var questions = await _questionRepo.GetQuestionsAsync();
 
             return Ok(questions);
@@ -44,12 +37,6 @@ namespace DriversLicenseTestWebAPI.controllers
         [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> GetExamQuestions()
         {
-            var userId = _userManager.GetUserId(User);
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-
             var questions = await _questionRepo.GetExamQuestions();
             List<QuestionDto> questionDtos = new List<QuestionDto>();
 
@@ -79,13 +66,6 @@ namespace DriversLicenseTestWebAPI.controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetQuestionsByPageIndexAsync(int index)
         {
-            var userId = _userManager.GetUserId(User);
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-
             var questions = await _questionRepo.GetQuestionsWithAnswersByPageIndexAsync(index);
 
             return Ok(questions);
@@ -95,13 +75,6 @@ namespace DriversLicenseTestWebAPI.controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetQuestionById(int id)
         {
-            var userId = _userManager.GetUserId(User);
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-
             var question = await _questionRepo.GetQuestionByIdAsync(id);
 
             return Ok(question);
@@ -121,13 +94,6 @@ namespace DriversLicenseTestWebAPI.controllers
             [FromBody] List<UserAnswerSubmissionDto> submissionDtos
         )
         {
-            var userId = _userManager.GetUserId(User);
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-
             string UserId = _userManager.GetUserId(User);
 
             ExamSession examSession = await _questionRepo.HandleExamSubmission(submissionDtos, UserId);
