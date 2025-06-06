@@ -1,6 +1,7 @@
-import { provideServerRendering } from '@angular/ssr';
+import { provideServerRouting } from '@angular/ssr';
 import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
 import { appConfig } from './app.config';
+import { provideServerRendering } from '@angular/platform-server';
 
 const serverConfig: ApplicationConfig = {
   providers: [
