@@ -1,20 +1,9 @@
-import { HttpClient } from '@angular/common/http'; 
+import { Component } from "@angular/core";
 
-export class RegisterComponent {
-  constructor(private http: HttpClient) {} 
+@Component({
+  selector: 'app-register',
+  templateUrl: "./register.component.html",
+  styleUrls: ['./register.component.css']
+})
 
-  onSubmit(form: any) {
-    if (form.valid) {
-      this.http.post('https://localhost:5001/api/register', form.value).subscribe({
-        next: (res) => {
-          console.log('Registration successful', res);
-          alert('User registered successfully');
-        },
-        error: (err) => {
-          console.error('Registration failed', err);
-          alert('Registration failed');
-        }
-      });
-    }
-  }
-}
+export class RegisterComponent{};

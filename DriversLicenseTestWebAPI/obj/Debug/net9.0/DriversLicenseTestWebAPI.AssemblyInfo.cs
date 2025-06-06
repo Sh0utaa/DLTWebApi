@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DriversLicenseTestWebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c9df08636e3650f8700d40bb48b069ac3a609fd5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+10094d32fd355e9a600388311bc44f8cdab5b09a")]
 [assembly: System.Reflection.AssemblyProductAttribute("DriversLicenseTestWebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DriversLicenseTestWebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

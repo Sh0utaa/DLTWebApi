@@ -1,16 +1,31 @@
-<header>
-  <nav class="navbar">
-    <a class="navbar-brand" href="#">DriversLicenseTest</a>
-    <button class="navbar-toggler" (click)="toggleNav()">☰</button>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <!-- Logo -->
+    <a class="navbar-brand" href="#">
+      Drivers License Exam
+    </a>
 
-    <div class="navbar-collapse" [class.show]="navOpen" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a href="#">Profile</a></li>
-        <li class="nav-item"><a routerLink="/login" routerLinkActive="active">Login</a></li>
+    <!-- Navbar toggler for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Nav items -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a routerLink="/register" routerLinkActive="active">Register</a>
+          <a class="nav-link" routerLink="/leaderboards">Leaderboards</a>
+        </li>
+      </ul>
+
+      <!-- Login button/icon on the right -->
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </a>
         </li>
       </ul>
     </div>
-  </nav>
-</header>
+  </div>
+</nav>
