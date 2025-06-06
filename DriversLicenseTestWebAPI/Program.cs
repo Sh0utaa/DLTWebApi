@@ -77,6 +77,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<IScrapeQuestions, ScrapeQuestions>();
 builder.Services.AddScoped<IQuestionRepo, QuestionRepo>();
+builder.Services.AddScoped<ILeaderboardRepo, LeaderboardRepo>();
 
 var app = builder.Build();
 

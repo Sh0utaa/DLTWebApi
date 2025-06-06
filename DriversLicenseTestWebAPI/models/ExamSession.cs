@@ -1,7 +1,4 @@
 
-
-using System.Text.Json.Serialization;
-
 namespace DriversLicenseTestWebAPI.models
 {
     public class ExamSession
