@@ -3,6 +3,7 @@ using DriversLicenseTestWebAPI.interfaces;
 using DriversLicenseTestWebAPI.repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using DriversLicenseTestWebAPI.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +12,28 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
+builder.Services.AddTransient<IEmailSender<IdentityUser>, HelperFunctions.DummyEmailSender>();
 
-builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-    .AddEntityFrameworkStores<DataContext>();
+builder.Services.AddAuthentication();
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<DataContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("AuthenticatedUser", policy => policy.RequireAuthenticatedUser());
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -101,5 +119,6 @@ if (app.Environment.IsDevelopment())
 }
 // app.UseHttpsRedirection();
 
+await HelperFunctions.SeedAdminUserAsync(app.Services);
 
 app.Run();

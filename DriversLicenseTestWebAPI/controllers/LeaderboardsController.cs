@@ -13,7 +13,7 @@ namespace DriversLicenseTestWebAPI.controllers
             _leaderboardRepo = leaderboardRepo;
         }
 
-        [HttpGet("/rates")]
+        [HttpGet("rates")]
         public async Task<IActionResult> GetExamPassRates()
         {
             try

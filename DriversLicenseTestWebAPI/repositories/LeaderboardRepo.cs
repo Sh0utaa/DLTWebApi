@@ -30,9 +30,9 @@ namespace DriversLicenseTestWebAPI.repositories
                         TotalSessions = group.Count(),
                         PassedSessions = group.Count(es => !es.Failed),
                         FailedSessions = group.Count(es => es.Failed),
-                        PassRate = Math.Round((double)group.Count(es => !es.Failed) / group.Count(), 3)
+                        PassingRate = Math.Round((double)group.Count(es => !es.Failed) / group.Count() * 100, 3)
                     })
-                    .OrderByDescending(x => x.PassRate)
+                    .OrderByDescending(x => x.PassingRate)
                     .ThenByDescending(x => x.PassedSessions)
                     .ToListAsync();
 
@@ -48,7 +48,7 @@ namespace DriversLicenseTestWebAPI.repositories
                         TotalSessions = entry.TotalSessions,
                         PassedSessions = entry.PassedSessions,
                         FailedSessions = entry.FailedSessions,
-                        PassRate = entry.PassRate
+                        PassingRate = entry.PassingRate
                     });
                 }
 

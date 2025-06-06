@@ -8,6 +8,6 @@ namespace DriversLicenseTestWebAPI.DTOs
         public int TotalSessions { get; set; }
         public int PassedSessions { get; set; }
         public int FailedSessions { get; set; }
-        public double PassRate { get; set; }
+        public double PassingRate { get; set; }
     }
 }
