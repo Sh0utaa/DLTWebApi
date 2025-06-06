@@ -1,1 +1,40 @@
-<p>exam works!</p>
+<div *ngIf="!isLoading && !examSubmitted && questions.length > 0">
+  <h2>Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}</h2>
+  
+  <!-- Display question image if exists -->
+  <img *ngIf="questions[currentQuestionIndex].image" 
+       [src]="questions[currentQuestionIndex].image" 
+       alt="Question image"
+       style="max-width: 300px;">
+  
+  <p>{{ questions[currentQuestionIndex].questionContent }}</p>
+
+  <div *ngFor="let answer of questions[currentQuestionIndex].answers">
+    <label>
+      <input
+        type="radio"
+        name="question{{ questions[currentQuestionIndex].id }}"
+        [checked]="isAnswerSelected(questions[currentQuestionIndex].id, answer.id)"
+        (change)="onSelectAnswer(questions[currentQuestionIndex].id, answer.id)"
+      />
+      {{ answer.text }}
+    </label>
+  </div>
+
+  <!-- Navigation buttons -->
+  <div>
+    <button (click)="prevQuestion()" [disabled]="currentQuestionIndex === 0">
+      Previous
+    </button>
+    <button (click)="nextQuestion()" [disabled]="currentQuestionIndex === questions.length - 1">
+      Next
+    </button>
+  </div>
+
+  <!-- Submit button shows only on last question -->
+  <div *ngIf="currentQuestionIndex === questions.length - 1">
+    <button (click)="submitExam()">Submit Exam</button>
+  </div>
+</div>
+
+<!-- Add this helper function to your component class -->
