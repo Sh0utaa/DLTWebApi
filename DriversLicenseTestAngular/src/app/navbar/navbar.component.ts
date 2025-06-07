@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
@@ -10,8 +10,7 @@ import { AuthService } from '../auth/auth.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
-  navOpen = false;
+export class NavbarComponent implements OnInit {
   isLoggedIn = false;
 
   constructor(public authService: AuthService, private router: Router) {
@@ -20,17 +19,7 @@ export class NavbarComponent {
     });
   }
 
-  toggleNav() {
-    this.navOpen = !this.navOpen;
-  }
 
-  handleAuthClick() {
-    if (this.isLoggedIn) {
-      this.authService.setLoginStatus(false);
-      alert('Logged out!');
-      this.router.navigate(['/login']);
-    } else {
-      this.router.navigate(['/login']);
-    }
-  }
+
+  
 }
