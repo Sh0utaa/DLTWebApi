@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         console.error("Validation check fialed, ", err)
-        this.router.navigate(['/'])
+        this.router.navigate(['/login'])
       }
     })
   }

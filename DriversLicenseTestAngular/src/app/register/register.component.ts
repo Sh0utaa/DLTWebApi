@@ -28,7 +28,7 @@ export class RegisterComponent implements OnInit {
       },
       error: (err) => {
         console.error("Validation check fialed, ", err)
-        this.router.navigate(['/'])
+        this.router.navigate(['/register'])
       }
     })
   }

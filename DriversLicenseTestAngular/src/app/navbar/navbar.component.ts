@@ -29,15 +29,16 @@ export class NavbarComponent implements OnInit {
 
   handleAuthClick(): void {
     if (this.isLoggedIn) {
-      this.http.post('/api/auth/logout', {}, { withCredentials: true }).subscribe({
+      this.http.post('/api/auth/logout', {}, {
+        withCredentials: true
+      }).subscribe({
         next: () => {
-          this.isLoggedIn = false;
           this.router.navigate(['/login']);
         },
-        error: err => console.error('Logout failed:', err)
+        error: err => {
+          console.error('Logout failed', err);
+        }
       });
-    } else {
-      this.router.navigate(['/login']);
-    }
+    } 
   }
 }
