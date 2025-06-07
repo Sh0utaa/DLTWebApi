@@ -1,22 +1,48 @@
-
 <div class="container mt-5" style="max-width: 500px;">
   <h2 class="mb-4"><i class="fas fa-user"></i> Register</h2>
 
-  <form>
+  <!-- Form submits to submitForm() -->
+  <form (ngSubmit)="submitForm()" #registerForm="ngForm">
     <div class="mb-3">
-      <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email address</label>
-      <input type="email" class="form-control" id="email" name="email" required />
+      <label for="email" class="form-label">
+        <i class="fas fa-envelope"></i> Email address
+      </label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        required
+        [(ngModel)]="user.email"
+      />
     </div>
 
     <div class="mb-3">
-      <label for="password" class="form-label"><i class="fas fa-key"></i> Password</label>
-      <input type="password" class="form-control" id="password" name="password" required minlength="6" />
+      <label for="password" class="form-label">
+        <i class="fas fa-key"></i> Password
+      </label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+        required
+        minlength="6"
+        [(ngModel)]="user.password"
+      />
     </div>
 
-    <button type="submit" class="btn btn-primary w-100">Register</button>
+    <button
+      type="submit"
+      class="btn btn-primary w-100"
+      [disabled]="registerForm.invalid"
+    >
+      Register
+    </button>
 
-    <div class="text-center mt-3">
-      <a href="/login" class="btn btn-link">Already have an account? Login</a>
-    </div>
+  <div class="text-center mt-3">
+  <a routerLink="/login" class="btn btn-link">Already have an account? Login</a>
+</div>
+
   </form>
 </div>
