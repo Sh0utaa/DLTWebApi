@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { HttpClient } from '@angular/common/http';
+import { ExamService } from '../exam/exam.service'; // assuming this is your "auth service"
 
 @Component({
   selector: 'app-navbar',
@@ -13,13 +14,30 @@ import { AuthService } from '../auth/auth.service';
 export class NavbarComponent implements OnInit {
   isLoggedIn = false;
 
-  constructor(public authService: AuthService, private router: Router) {
-    this.authService.loggedIn$.subscribe(status => {
-      this.isLoggedIn = status;
+  constructor(
+    private examService: ExamService,
+    private http: HttpClient,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.examService.validateUser().subscribe({
+      next: res => this.isLoggedIn = res.isValid,
+      error: _ => this.isLoggedIn = false
     });
   }
 
-
-
-  
+  handleAuthClick(): void {
+    if (this.isLoggedIn) {
+      this.http.post('/api/auth/logout', {}, { withCredentials: true }).subscribe({
+        next: () => {
+          this.isLoggedIn = false;
+          this.router.navigate(['/login']);
+        },
+        error: err => console.error('Logout failed:', err)
+      });
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
 }
