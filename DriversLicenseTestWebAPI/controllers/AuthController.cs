@@ -41,7 +41,7 @@ namespace DriversLicenseTestWebAPI.controllers
             try
             {
                 await _signinManager.SignOutAsync();
-                return Ok(new { message = "user logged out successfully.x" });
+                return Ok(new { message = "user logged out successfully." });
             }
             catch (Exception ex)
             {
