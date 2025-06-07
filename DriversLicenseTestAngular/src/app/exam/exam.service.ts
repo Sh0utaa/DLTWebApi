@@ -32,7 +32,15 @@ export interface SubmissionResponse {
 export class ExamService {
     private apiUrl = 'http://localhost:5279/api/questions';
 
+    private authUrl = 'http://localhost:5279/api/auth'
+
   constructor(private http: HttpClient) { }
+
+  validateUser(): Observable<{ isValid: boolean}> {
+    return this.http.get<{ isValid: boolean }>(`${this.authUrl}/validate-user`, {
+      withCredentials: true
+    })
+  }
 
   getExamQuestions(): Observable<Question[]> {
     return this.http.get<Question[]>(`${this.apiUrl}/exam-questions`, { withCredentials: true });

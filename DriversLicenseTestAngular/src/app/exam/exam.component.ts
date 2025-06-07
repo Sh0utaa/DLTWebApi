@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ExamService, Question, QuestionSubmission, SubmissionResponse } from './exam.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-exam',
   standalone: true,
@@ -21,10 +22,22 @@ export class ExamComponent implements OnInit {
   error: string | null = null;
   submissionResult: SubmissionResponse | null = null;
 
-  constructor(private questionService: ExamService) {}
+  constructor(private questionService: ExamService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadQuestions();
+
+    this.questionService.validateUser().subscribe({
+      next: (response) => {
+        if (!response.isValid) {
+          this.router.navigate(['/login'])
+        }
+      },
+      error: (err) => {
+        console.error("Validation check fialed, ", err)
+        this.router.navigate(['/login'])
+      }
+    })
   }
 
   loadQuestions(): void {
