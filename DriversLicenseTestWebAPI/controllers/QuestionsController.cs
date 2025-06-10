@@ -82,7 +82,7 @@ namespace DriversLicenseTestWebAPI.controllers
 
         [HttpGet("scrape")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> ScrapeQuestionsAsync()
+        public async Task<IActionResult> ScrapeAllQuestionsAsync()
         {
             var questions = await _scrapeQuestions.ScrapeAllQuestions();
             return Ok(questions);
@@ -90,9 +90,7 @@ namespace DriversLicenseTestWebAPI.controllers
 
         [HttpPost("submit")]
         [Authorize(Policy = "AuthenticatedUser")]
-        public async Task<IActionResult> SubmitAnswers(
-            [FromBody] List<UserAnswerSubmissionDto> submissionDtos
-        )
+        public async Task<IActionResult> SubmitAnswers([FromBody] List<UserAnswerSubmissionDto> submissionDtos)
         {
             string UserId = _userManager.GetUserId(User);
 
