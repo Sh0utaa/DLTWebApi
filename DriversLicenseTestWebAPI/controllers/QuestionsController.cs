@@ -11,15 +11,12 @@ namespace DriversLicenseTestWebAPI.controllers
     [ApiController]
     public class QuestionsController : ControllerBase
     {
-        private readonly IScrapeQuestions _scrapeQuestions;
         private readonly IQuestionRepo _questionRepo;
         private readonly UserManager<IdentityUser> _userManager;
         public QuestionsController(
-            IScrapeQuestions scrapeQuestions,
             IQuestionRepo questionRepo,
             UserManager<IdentityUser> userManager)
         {
-            _scrapeQuestions = scrapeQuestions;
             _questionRepo = questionRepo;
             _userManager = userManager;
         }
@@ -28,17 +25,26 @@ namespace DriversLicenseTestWebAPI.controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetQuestionsAsync()
         {
-            var questions = await _questionRepo.GetQuestionsAsync();
+            var questions = await _questionRepo.GetAllQuestionsAsync();
 
             return Ok(questions);
         }
 
-        [HttpGet("exam-questions")]
-        [Authorize(Policy = "AuthenticatedUser")]
-        public async Task<IActionResult> GetExamQuestions()
+        [HttpGet("{categoryId:int}")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> GetQuestionsByCategory(int categoryId)
         {
-            var questions = await _questionRepo.GetExamQuestions();
-            List<QuestionDto> questionDtos = new List<QuestionDto>();
+            var questions = await _questionRepo.GetQuestionsAsync(categoryId);
+
+            return Ok(questions);
+        }
+
+        [HttpGet("exam/{categoryId:int}")]
+        [Authorize(Policy = "AuthenticatedUser")]
+        public async Task<IActionResult> GetExamQuestionsByCategory(int categoryId)
+        {
+            var questions = await _questionRepo.GetExamQuestions(categoryId);
+            var questionDtos = new List<QuestionDto>();
 
             foreach (var question in questions)
             {
@@ -60,32 +66,6 @@ namespace DriversLicenseTestWebAPI.controllers
             }
 
             return Ok(questionDtos);
-        }
-
-        [HttpGet("by-page/{index}")]
-        [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> GetQuestionsByPageIndexAsync(int index)
-        {
-            var questions = await _questionRepo.GetQuestionsWithAnswersByPageIndexAsync(index);
-
-            return Ok(questions);
-        }
-
-        [HttpGet("by-id/{id}")]
-        [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> GetQuestionById(int id)
-        {
-            var question = await _questionRepo.GetQuestionByIdAsync(id);
-
-            return Ok(question);
-        }
-
-        [HttpGet("scrape")]
-        [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> ScrapeAllQuestionsAsync()
-        {
-            var questions = await _scrapeQuestions.ScrapeAllQuestionsAsync();
-            return Ok(questions);
         }
 
         [HttpPost("submit")]

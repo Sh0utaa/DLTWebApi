@@ -17,12 +17,13 @@ namespace DriversLicenseTestWebAPI.repositories
             _context = context;
         }
 
-        public async Task<List<Question>> GetExamQuestions()
+        public async Task<List<Question>> GetExamQuestions(int categoryId)
         {
             try
             {
                 return await _context.Questions
                     .Include(q => q.Answers)
+                    .Where(q => q.CategoryId == categoryId)
                     .OrderBy(q => Guid.NewGuid())
                     .Take(30)
                     .ToListAsync();
@@ -33,22 +34,7 @@ namespace DriversLicenseTestWebAPI.repositories
                 throw;
             }
         }
-
-        public async Task<Question?> GetQuestionByIdAsync(int id)
-        {
-            try
-            {
-                return await _context.Questions.Include(q => q.Answers).FirstOrDefaultAsync(q => q.Id == id);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error getting question by ID {id}: {ex}");
-
-                throw;
-            }
-        }
-
-        public async Task<List<Question>> GetQuestionsAsync()
+        public async Task<List<Question>> GetAllQuestionsAsync()
         {
             try
             {
@@ -64,33 +50,19 @@ namespace DriversLicenseTestWebAPI.repositories
             }
         }
 
-        public async Task<List<Question>> GetQuestionsByPageIndexAsync(int index)
-        {
-            try
-            {
-                return await _context.Questions.Where(question => question.PageIndex == index).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error happened while getting questions by index: {ex}");
-
-                throw;
-            }
-        }
-
-        public async Task<List<Question>> GetQuestionsWithAnswersByPageIndexAsync(int index)
+        public async Task<List<Question>> GetQuestionsAsync(int categoryId)
         {
             try
             {
                 return await _context.Questions
                     .Include(q => q.Answers)
-                    .Where(q => q.PageIndex == index)
+                    .Where(q => q.CategoryId == categoryId)
+                    .OrderBy(q => Guid.NewGuid())
                     .ToListAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error happened while getting questions with answers by index: {ex}");
-
+                Console.WriteLine($"Error getting questions: {ex}");
                 throw;
             }
         }
@@ -120,7 +92,7 @@ namespace DriversLicenseTestWebAPI.repositories
 
                 int CorrectAmount = 0, IncorrectAmount = 0;
 
-                var questionList = await GetQuestionsAsync();
+                var questionList = await GetAllQuestionsAsync();
                 var allQuestions = new HashSet<Question>(questionList);
 
                 foreach (var submission in submissions)
@@ -186,5 +158,6 @@ namespace DriversLicenseTestWebAPI.repositories
                 throw;
             }
         }
+
     }
 }

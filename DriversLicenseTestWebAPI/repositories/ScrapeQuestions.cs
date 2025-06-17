@@ -10,12 +10,23 @@ namespace DriversLicenseTestWebAPI.repositories
     public class ScrapeQuestions : IScrapeQuestions
     {
         private readonly DataContext _context;
-        private readonly IQuestionRepo _questionRepo;
-        public ScrapeQuestions(DataContext context, IQuestionRepo questionRepo)
+        public ScrapeQuestions(DataContext context)
         {
             _context = context;
-            _questionRepo = questionRepo;
         }
+        Dictionary<int, int> pagesDict = new Dictionary<int, int>
+        {
+            { 1, 44 },
+            { 2, 17 },
+            { 3, 55 },
+            { 4, 55 },
+            { 5, 54 },
+            { 6, 50 },
+            { 7, 49 },
+            { 8, 52 },
+            { 9, 50 },
+            { 10, 17 }
+        };
 
         private static string CleanText(string input)
         {
@@ -26,72 +37,8 @@ namespace DriversLicenseTestWebAPI.repositories
             return Regex.Replace(input, @"\s+", " ").Trim();
         }
 
-        public Task<List<Question>> GetCategoryEightQuestions()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Question>> GetCategoryFiveQuestions()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Question>> GetCategoryFourQuestions()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Question>> GetCategoryNineQuestions()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Question>> GetCategoryOneQuestions()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Question>> GetCategorySevenQuestions()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Question>> GetCategorySixQuestions()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Question>> GetCategoryTenQuestions()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Question>> GetCategoryThreeQuestions()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Question>> GetCategoryTwoQuestions()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<List<Question>>> ScrapeAllQuestionsAsync()
         {
-            var pagesDict = new Dictionary<int, int>
-            {
-                { 1, 44 },
-                { 2, 17 },
-                { 3, 55 },
-                { 4, 55 },
-                { 5, 54 },
-                { 6, 50 },
-                { 7, 49 },
-                { 8, 52 },
-                { 9, 50 },
-                { 10, 17 }
-            };
-
             var questions = new List<List<Question>>();
 
             foreach (var kvp in pagesDict)
@@ -100,6 +47,15 @@ namespace DriversLicenseTestWebAPI.repositories
                 questions.Add(result);
             }
             return questions;
+        }
+        public Task<List<Question>> ScrapeCategoryAsync(int categoryId)
+        {
+            if (!pagesDict.ContainsKey(categoryId))
+            {
+                throw new ArgumentException("Invalid categoryId");
+            }
+
+            return ScrapeCategoryAsync(categoryId, pagesDict[categoryId]);
         }
 
         private async Task<List<Question>> ScrapeCategoryAsync(int category, int pages)
