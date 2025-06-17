@@ -84,7 +84,7 @@ namespace DriversLicenseTestWebAPI.controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> ScrapeAllQuestionsAsync()
         {
-            var questions = await _scrapeQuestions.ScrapeAllQuestions();
+            var questions = await _scrapeQuestions.ScrapeAllQuestionsAsync();
             return Ok(questions);
         }
 

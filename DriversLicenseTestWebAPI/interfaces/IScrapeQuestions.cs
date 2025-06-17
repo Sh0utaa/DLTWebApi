@@ -4,7 +4,7 @@ namespace DriversLicenseTestWebAPI.interfaces
 {
     public interface IScrapeQuestions
     {
-        Task<List<Question>> ScrapeAllQuestionsAsync();
+        Task<List<List<Question>>> ScrapeAllQuestionsAsync();
         Task<List<Question>> GetCategoryOneQuestions();
         Task<List<Question>> GetCategoryTwoQuestions();
         Task<List<Question>> GetCategoryThreeQuestions();
