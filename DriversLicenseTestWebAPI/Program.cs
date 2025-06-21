@@ -4,6 +4,7 @@ using DriversLicenseTestWebAPI.repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DriversLicenseTestWebAPI.Helper;
+using DriversLicenseTestWebAPI.models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ builder.Services.AddTransient<IEmailSender<IdentityUser>, HelperFunctions.DummyE
 
 builder.Services.AddAuthentication();
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<DataContext>()
     .AddDefaultTokenProviders();
 

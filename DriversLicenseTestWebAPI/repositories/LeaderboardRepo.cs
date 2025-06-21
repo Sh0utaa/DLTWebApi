@@ -3,6 +3,7 @@
 using AuthDemo.Data;
 using DriversLicenseTestWebAPI.DTOs;
 using DriversLicenseTestWebAPI.interfaces;
+using DriversLicenseTestWebAPI.models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,8 +12,8 @@ namespace DriversLicenseTestWebAPI.repositories
     public class LeaderboardRepo : ILeaderboardRepo
     {
         private readonly DataContext _context;
-        private readonly UserManager<IdentityUser> _userManger;
-        public LeaderboardRepo(DataContext context, UserManager<IdentityUser> userManager)
+        private readonly UserManager<ApplicationUser> _userManger;
+        public LeaderboardRepo(DataContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManger = userManager;

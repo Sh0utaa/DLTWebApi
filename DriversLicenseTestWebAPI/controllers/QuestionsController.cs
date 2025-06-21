@@ -12,10 +12,10 @@ namespace DriversLicenseTestWebAPI.controllers
     public class QuestionsController : ControllerBase
     {
         private readonly IQuestionRepo _questionRepo;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         public QuestionsController(
             IQuestionRepo questionRepo,
-            UserManager<IdentityUser> userManager)
+            UserManager<ApplicationUser> userManager)
         {
             _questionRepo = questionRepo;
             _userManager = userManager;

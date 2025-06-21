@@ -1,3 +1,4 @@
+using DriversLicenseTestWebAPI.models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +10,7 @@ namespace DriversLicenseTestWebAPI.Helper
         public static async Task SeedAdminUserAsync(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
             const string adminEmail = "admin@example.com";
@@ -23,9 +24,12 @@ namespace DriversLicenseTestWebAPI.Helper
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)
             {
-                adminUser = new IdentityUser
+                adminUser = new ApplicationUser
                 {
-                    UserName = adminEmail,
+                    UserName = "Shotesko",
+                    FirstName = "Shota",
+                    LastName = "Tevdorashvili",
+                    DateOfBirth = new DateTime(2006, 12, 12),
                     Email = adminEmail,
                     EmailConfirmed = true
                 };
