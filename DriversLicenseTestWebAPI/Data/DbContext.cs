@@ -15,6 +15,7 @@ public class DataContext : IdentityDbContext<ApplicationUser>
     public DbSet<Answer> Answers { get; set; }
     public DbSet<UserAnswerSubmission> UserAnswerSubmissions { get; set; }
     public DbSet<ExamSession> ExamSessions { get; set; }
+    public DbSet<VerificationCode> VerificationCodes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -51,6 +52,10 @@ public class DataContext : IdentityDbContext<ApplicationUser>
             .WithOne(a => a.ExamSession)
             .HasForeignKey(a => a.SessionId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<VerificationCode>()
+            .Property(v => v.Type)
+            .HasConversion<string>();
 
     }
 }

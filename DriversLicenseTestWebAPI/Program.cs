@@ -109,9 +109,14 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false;
 });
 
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings")
+);
+
 builder.Services.AddScoped<IScrapeQuestions, ScrapeQuestions>();
 builder.Services.AddScoped<IQuestionRepo, QuestionRepo>();
 builder.Services.AddScoped<ILeaderboardRepo, LeaderboardRepo>();
+builder.Services.AddScoped<IEmailRepo, EmailRepo>();
 
 var app = builder.Build();
 
