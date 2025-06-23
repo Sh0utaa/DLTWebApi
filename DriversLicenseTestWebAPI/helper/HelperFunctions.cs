@@ -11,7 +11,7 @@ namespace DriversLicenseTestWebAPI.Helper
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            const string adminEmail = "admin@example.com";
+            const string adminEmail = "shota.tevdorashvili@gau.edu.ge";
             const string adminPassword = "Admin@123";
 
             if (!await roleManager.RoleExistsAsync("Admin"))
@@ -24,7 +24,6 @@ namespace DriversLicenseTestWebAPI.Helper
             {
                 adminUser = new ApplicationUser
                 {
-                    UserName = "Shotesko",
                     FirstName = "Shota",
                     LastName = "Tevdorashvili",
                     DateOfBirth = new DateOnly(2006, 12, 12),
