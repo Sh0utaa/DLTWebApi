@@ -6,15 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DriversLicenseTestWebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class CreatingApplicationUser : Migration
+    public partial class AddingApplicationUser : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<DateTime>(
+            migrationBuilder.AddColumn<DateOnly>(
                 name: "DateOfBirth",
                 table: "AspNetUsers",
-                type: "datetime2",
+                type: "date",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(

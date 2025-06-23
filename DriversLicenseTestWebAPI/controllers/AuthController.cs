@@ -11,11 +11,11 @@ namespace DriversLicenseTestWebAPI.controllers
 
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManger;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signinManager;
         public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
-            _userManger = userManager;
+            _userManager = userManager;
             _signinManager = signInManager;
         }
 
@@ -26,7 +26,7 @@ namespace DriversLicenseTestWebAPI.controllers
                 return BadRequest("Invalid login data.");
             try
             {
-                var user = await _userManger.FindByEmailAsync(loginDto.Email);
+                var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
                 if (user == null)
                     return Unauthorized("Invalid email or password.");
@@ -53,22 +53,42 @@ namespace DriversLicenseTestWebAPI.controllers
             }
         }
 
-        [HttpGet("validate-user")]
-        [Authorize(Policy = "AuthenticatedUser")]
-        public async Task<IActionResult> ValidateUser()
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid login data.");
+
             try
             {
-                bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+                var existingEmail = await _userManager.FindByEmailAsync(registerDto.Email);
+                if (existingEmail != null)
+                    return BadRequest("Email exists already");
 
-                return Ok(new { isValid = isAuthenticated });
+                var user = new ApplicationUser
+                {
+                    FirstName = registerDto.FirstName,
+                    LastName = registerDto.LastName,
+                    DateOfBirth = registerDto.DateOfBirth,
+                    Email = registerDto.Email,
+                    UserName = registerDto.FirstName,
+                    EmailConfirmed = false
+                };
+
+                var result = await _userManager.CreateAsync(user, registerDto.Password);
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description).ToList();
+                    return BadRequest(errors);
+                }
+
+                return Ok("User registered successfully.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Console.WriteLine("Exception while registering user: ", ex);
                 throw;
             }
-
         }
 
         [HttpPost("logout")]
@@ -86,5 +106,22 @@ namespace DriversLicenseTestWebAPI.controllers
             }
         }
 
+        [HttpGet("validate-user")]
+        [Authorize(Policy = "AuthenticatedUser")]
+        public async Task<IActionResult> ValidateUser()
+        {
+            try
+            {
+                bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+
+                return Ok(new { isValid = isAuthenticated });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+        }
     }
 }

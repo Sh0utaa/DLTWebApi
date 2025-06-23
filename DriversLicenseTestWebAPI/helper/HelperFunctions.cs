@@ -1,7 +1,5 @@
 using DriversLicenseTestWebAPI.models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DriversLicenseTestWebAPI.Helper
 {
@@ -29,7 +27,7 @@ namespace DriversLicenseTestWebAPI.Helper
                     UserName = "Shotesko",
                     FirstName = "Shota",
                     LastName = "Tevdorashvili",
-                    DateOfBirth = new DateTime(2006, 12, 12),
+                    DateOfBirth = new DateOnly(2006, 12, 12),
                     Email = adminEmail,
                     EmailConfirmed = true
                 };

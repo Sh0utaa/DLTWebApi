@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DriversLicenseTestWebAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250621085423_CreatingApplicationUser")]
-    partial class CreatingApplicationUser
+    [Migration("20250621092027_AddingApplicationUser")]
+    partial class AddingApplicationUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,8 +62,8 @@ namespace DriversLicenseTestWebAPI.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
