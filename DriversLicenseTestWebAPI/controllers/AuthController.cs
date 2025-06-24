@@ -159,5 +159,43 @@ namespace DriversLicenseTestWebAPI.controllers
 
             return Ok(new { message = "Email confirmed successfully." });
         }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetDto)
+        {
+            // Validate the code first
+            var codeRecord = await _context.VerificationCodes
+                .Where(vc => vc.Email == resetDto.Email &&
+                            vc.Code == resetDto.Code &&
+                            vc.Type == VerificationType.PasswordReset)
+                .OrderByDescending(vc => vc.ExpiresAt)
+                .FirstOrDefaultAsync();
+
+            if (codeRecord == null || codeRecord.ExpiresAt < DateTime.UtcNow)
+                return BadRequest("Invalid or expired reset code.");
+
+            // Find the user
+            var user = await _userManager.FindByEmailAsync(resetDto.Email);
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
+
+            // Reset the password
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, resetDto.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors.Select(e => e.Description));
+            }
+
+            // Remove the used code
+            _context.VerificationCodes.Remove(codeRecord);
+            await _context.SaveChangesAsync();
+
+            return Ok("Password has been reset successfully.");
+        }
     }
 }
