@@ -9,6 +9,7 @@ namespace DriversLicenseTestWebAPI.models
         public int PageIndex { get; set; }
         public string? Image { get; set; }
         public string QuestionContent { get; set; }
+        public string Language { get; set; }
         public List<Answer?> Answers { get; set; }
         public void ValidateAnswers()
         {

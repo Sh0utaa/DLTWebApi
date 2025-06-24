@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using AngleSharp;
 using AuthDemo.Data;
@@ -37,31 +38,44 @@ namespace DriversLicenseTestWebAPI.repositories
             return Regex.Replace(input, @"\s+", " ").Trim();
         }
 
-        public async Task<List<List<Question>>> ScrapeAllQuestionsAsync()
+        public async Task<List<List<Question>>> ScrapeAllQuestionsAsync(string language)
         {
             var questions = new List<List<Question>>();
 
             foreach (var kvp in pagesDict)
             {
-                var result = await ScrapeCategoryAsync(kvp.Key, kvp.Value);
+                var result = await ScrapeCategoryAsync(kvp.Key, kvp.Value, language);
                 questions.Add(result);
             }
             return questions;
         }
-        public Task<List<Question>> ScrapeCategoryAsync(int categoryId)
+        public Task<List<Question>> ScrapeCategoryAsync(int categoryId, string language)
         {
             if (!pagesDict.ContainsKey(categoryId))
             {
                 throw new ArgumentException("Invalid categoryId");
             }
 
-            return ScrapeCategoryAsync(categoryId, pagesDict[categoryId]);
+            return ScrapeCategoryAsync(categoryId, pagesDict[categoryId], language);
         }
 
-        private async Task<List<Question>> ScrapeCategoryAsync(int category, int pages)
+        private async Task<List<Question>> ScrapeCategoryAsync(int category, int pages, string language)
         {
             var questions = new List<Question>();
             using var httpClient = new HttpClient();
+
+            var cookieObj = new
+            {
+                category = 2,
+                locale = language,
+                skin = "dark",
+                user = 0,
+                created = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+            };
+
+            var cookieJson = JsonSerializer.Serialize(cookieObj);
+            var encodedCookie = Uri.EscapeDataString(cookieJson);
+            httpClient.DefaultRequestHeaders.Add("Cookie", $"exam-settings={encodedCookie}");
 
             for (int i = 1; i <= pages; i++)
             {
@@ -110,7 +124,8 @@ namespace DriversLicenseTestWebAPI.repositories
                             CategoryId = category,
                             Image = container.QuerySelector(".t-image img")?.GetAttribute("src"),
                             QuestionContent = questionContent,
-                            Answers = new List<Answer>()
+                            Answers = new List<Answer>(),
+                            Language = language
                         };
 
                         var answerElements = container.QuerySelectorAll(".t-answer:not(.ans-empty)");

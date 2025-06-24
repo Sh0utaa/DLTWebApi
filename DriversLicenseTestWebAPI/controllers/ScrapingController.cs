@@ -19,22 +19,32 @@ namespace DriversLicenseTestWebAPI.controllers
 
         [HttpGet]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> ScrapeAllQuestions()
+        public async Task<IActionResult> ScrapeAllQuestions([FromQuery] string language = "ka")
         {
-            var questions = await _scrapeQuestions.ScrapeAllQuestionsAsync();
+            if (language != "ka" && language != "en")
+            {
+                return BadRequest("Invalid language. Must be 'ka' or 'en'.");
+            }
+
+            var questions = await _scrapeQuestions.ScrapeAllQuestionsAsync(language);
             return Ok(questions);
         }
 
         [HttpGet("{categoryId:int}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> ScrapeCategory(int categoryId)
+        public async Task<IActionResult> ScrapeCategory(int categoryId, [FromQuery] string language = "ka")
         {
             if (categoryId < 1 || categoryId > 10)
             {
                 return BadRequest("Invalid category ID. Must be between 1 and 10.");
             }
 
-            var questions = await _scrapeQuestions.ScrapeCategoryAsync(categoryId);
+            if (language != "ka" && language != "en")
+            {
+                return BadRequest("Invalid language. Must be 'ka' or 'en'.");
+            }
+
+            var questions = await _scrapeQuestions.ScrapeCategoryAsync(categoryId, language);
             return Ok(questions);
         }
     }

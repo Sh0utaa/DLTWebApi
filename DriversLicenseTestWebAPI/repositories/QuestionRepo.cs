@@ -17,13 +17,13 @@ namespace DriversLicenseTestWebAPI.repositories
             _context = context;
         }
 
-        public async Task<List<Question>> GetExamQuestions(int categoryId)
+        public async Task<List<Question>> GetExamQuestions(int categoryId, string language)
         {
             try
             {
                 return await _context.Questions
                     .Include(q => q.Answers)
-                    .Where(q => q.CategoryId == categoryId)
+                    .Where(q => q.CategoryId == categoryId && q.Language == language)
                     .OrderBy(q => Guid.NewGuid())
                     .Take(30)
                     .ToListAsync();
@@ -50,13 +50,13 @@ namespace DriversLicenseTestWebAPI.repositories
             }
         }
 
-        public async Task<List<Question>> GetQuestionsAsync(int categoryId)
+        public async Task<List<Question>> GetQuestionsAsync(int categoryId, string language)
         {
             try
             {
                 return await _context.Questions
                     .Include(q => q.Answers)
-                    .Where(q => q.CategoryId == categoryId)
+                    .Where(q => q.CategoryId == categoryId && q.Language == language)
                     .OrderBy(q => Guid.NewGuid())
                     .ToListAsync();
             }

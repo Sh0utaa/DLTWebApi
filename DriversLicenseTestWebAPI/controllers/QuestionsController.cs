@@ -23,7 +23,7 @@ namespace DriversLicenseTestWebAPI.controllers
 
         [HttpGet]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> GetQuestionsAsync()
+        public async Task<IActionResult> GetQuestionsAsync([FromQuery] string language)
         {
             var questions = await _questionRepo.GetAllQuestionsAsync();
 
@@ -32,18 +32,28 @@ namespace DriversLicenseTestWebAPI.controllers
 
         [HttpGet("{categoryId:int}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> GetQuestionsByCategory(int categoryId)
+        public async Task<IActionResult> GetQuestionsByCategory(int categoryId, [FromQuery] string language)
         {
-            var questions = await _questionRepo.GetQuestionsAsync(categoryId);
+            if (language != "ka" && language != "en")
+            {
+                return BadRequest("Invalid language. Must be 'ka' or 'en'.");
+            }
+
+            var questions = await _questionRepo.GetQuestionsAsync(categoryId, language);
 
             return Ok(questions);
         }
 
         [HttpGet("exam/{categoryId:int}")]
         [Authorize(Policy = "AuthenticatedUser")]
-        public async Task<IActionResult> GetExamQuestionsByCategory(int categoryId)
+        public async Task<IActionResult> GetExamQuestionsByCategory(int categoryId, [FromQuery] string language)
         {
-            var questions = await _questionRepo.GetExamQuestions(categoryId);
+            if (language != "ka" && language != "en")
+            {
+                return BadRequest("Invalid language. Must be 'ka' or 'en'.");
+            }
+
+            var questions = await _questionRepo.GetExamQuestions(categoryId, language);
             var questionDtos = new List<QuestionDto>();
 
             foreach (var question in questions)

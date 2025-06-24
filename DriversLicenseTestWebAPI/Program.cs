@@ -102,11 +102,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.Password.RequiredLength = 5;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireDigit = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = false;
 });
 
