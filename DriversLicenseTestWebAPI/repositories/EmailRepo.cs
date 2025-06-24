@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using DriversLicenseTestWebAPI.models;
 using DriversLicenseTestWebAPI.interfaces;
 using MailKit.Security;
+using AuthDemo.Data;
 
 namespace DriversLicenseTestWebAPI.repositories
 {

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DriversLicenseTestWebAPI.Helper;
 using DriversLicenseTestWebAPI.models;
+using AspNetCoreRateLimit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -118,14 +119,21 @@ builder.Services.AddScoped<IQuestionRepo, QuestionRepo>();
 builder.Services.AddScoped<ILeaderboardRepo, LeaderboardRepo>();
 builder.Services.AddScoped<IEmailRepo, EmailRepo>();
 
+builder.Services.AddMemoryCache();
+builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+builder.Services.AddInMemoryRateLimiting();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
 var app = builder.Build();
 
-app.MapIdentityApi<IdentityUser>();
+// app.MapIdentityApi<IdentityUser>();
 app.UseCors("AllowLocalhostWithCredentials");
 app.MapControllers();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseIpRateLimiting();
 
 if (app.Environment.IsDevelopment())
 {

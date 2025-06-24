@@ -1,8 +1,11 @@
+using System.Security.Claims;
+using AuthDemo.Data;
 using DriversLicenseTestWebAPI.DTOs;
 using DriversLicenseTestWebAPI.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DriversLicenseTestWebAPI.controllers
 {
@@ -13,9 +16,11 @@ namespace DriversLicenseTestWebAPI.controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signinManager;
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        private readonly DataContext _context;
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, DataContext context)
         {
             _userManager = userManager;
+            _context = context;
             _signinManager = signInManager;
         }
 
@@ -67,11 +72,11 @@ namespace DriversLicenseTestWebAPI.controllers
 
                 var user = new ApplicationUser
                 {
+                    UserName = registerDto.UserName,
                     FirstName = registerDto.FirstName,
                     LastName = registerDto.LastName,
                     DateOfBirth = registerDto.DateOfBirth,
                     Email = registerDto.Email,
-                    UserName = registerDto.FirstName,
                     EmailConfirmed = false
                 };
 
@@ -122,6 +127,37 @@ namespace DriversLicenseTestWebAPI.controllers
                 throw;
             }
 
+        }
+
+        [HttpPost("confirm-email")]
+        [Authorize(Policy = "AuthenticatedUser")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] string code)
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+
+            var codeRecord = await _context.VerificationCodes
+               .Where(vc => vc.Email == email &&
+                           vc.Code == code &&
+                           vc.Type == VerificationType.EmailConfirmation)
+               .OrderByDescending(vc => vc.ExpiresAt)
+               .FirstOrDefaultAsync();
+
+            if (codeRecord == null || codeRecord.ExpiresAt < DateTime.UtcNow)
+            {
+                return BadRequest(new { message = "Invalid or expired verification code." });
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null)
+            {
+                user.EmailConfirmed = true;
+            }
+
+            _context.VerificationCodes.Remove(codeRecord);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Email confirmed successfully." });
         }
     }
 }
