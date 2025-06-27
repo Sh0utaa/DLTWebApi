@@ -1,9 +1,11 @@
 using AuthDemo.Data;
+using DriversLicenseTestWebAPI.DTOs;
 using DriversLicenseTestWebAPI.interfaces;
 using DriversLicenseTestWebAPI.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 
 namespace DriversLicenseTestWebAPI.controllers
@@ -127,6 +129,22 @@ namespace DriversLicenseTestWebAPI.controllers
                 email = req.Email,
                 code = req.Code
             });
+        }
+
+        [HttpPost("send-to-shota")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SendMailToShota([FromBody] EmailDto email)
+        {
+            try
+            {
+                await _emailRepo.SendToShotaAsync(email);
+                return Ok("Email sent to Shota!");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

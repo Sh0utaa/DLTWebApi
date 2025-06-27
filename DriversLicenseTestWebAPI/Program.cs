@@ -77,8 +77,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhostWithCredentials", policy =>
     {
+        // REMOVE ALL LOCALHOST IP'S / LOCALHOSTS FOR PRODUCTION!!
         policy
-            .WithOrigins("http://localhost:5279", "http://localhost:4200")
+            .WithOrigins("http://localhost:5279", "http://localhost:4200", "https://shotatevdorashvili.com", "http://127.0.0.1:5500")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
