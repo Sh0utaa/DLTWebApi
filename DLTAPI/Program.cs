@@ -126,6 +126,12 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    db.Database.Migrate();
+}
+
 // app.MapIdentityApi<IdentityUser>();
 app.UseCors("AllowLocalhostWithCredentials");
 app.MapControllers();

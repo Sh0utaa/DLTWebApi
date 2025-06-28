@@ -5,6 +5,7 @@
 # Rider and VS Code folders
 .idea/
 .vscode/
+.vs/
 
 # User-specific files
 *.user
