@@ -15,7 +15,7 @@ namespace DLTAPI.repositories
 
         public EmailRepo(IOptions<EmailSettings> settings)
         {
-            _settings = settings.Value;
+            _settings = settings.Value ?? throw new ArgumentNullException(nameof(settings));
         }
 
         public async Task SendEmailAsync(string to, string subject, string body, bool html)
@@ -39,7 +39,6 @@ namespace DLTAPI.repositories
 
         public async Task SendToShotaAsync(EmailDto mail)
         {
-
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_settings.SenderEmail));
             email.To.Add(MailboxAddress.Parse("shota@shotatevdorashvili.com"));

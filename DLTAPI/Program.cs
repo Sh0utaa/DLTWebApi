@@ -6,8 +6,22 @@ using Microsoft.EntityFrameworkCore;
 using DLTAPI.Helper;
 using DLTAPI.models;
 using AspNetCoreRateLimit;
+using DotNetEnv;
+
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddEnvironmentVariables();
+
+builder.Services.Configure<EmailSettings>(options =>
+{
+    options.SmtpServer = Environment.GetEnvironmentVariable("EMAIL_SETTINGS__SMTP_SERVER");
+    options.Port = int.Parse(Environment.GetEnvironmentVariable("EMAIL_SETTINGS__PORT"));
+    options.UseSSL = bool.Parse(Environment.GetEnvironmentVariable("EMAIL_SETTINGS__USE_SSL"));
+    options.SenderEmail = Environment.GetEnvironmentVariable("EMAIL_SETTINGS__SENDER_EMAIL");
+    options.Password = Environment.GetEnvironmentVariable("EMAIL_SETTINGS__PASSWORD");
+});
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -110,9 +124,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false;
 });
 
-builder.Services.Configure<EmailSettings>(
-    builder.Configuration.GetSection("EmailSettings")
-);
+// builder.Services.Configure<EmailSettings>(
+//     builder.Configuration.GetSection("EmailSettings")
+// );
 
 builder.Services.AddScoped<IScrapeQuestions, ScrapeQuestions>();
 builder.Services.AddScoped<IQuestionRepo, QuestionRepo>();
@@ -126,11 +140,11 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
-    db.Database.Migrate();
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+//     db.Database.Migrate();
+// }
 
 // app.MapIdentityApi<IdentityUser>();
 app.UseCors("AllowLocalhostWithCredentials");
