@@ -140,11 +140,44 @@ builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>()
 
 var app = builder.Build();
 
-// using (var scope = app.Services.CreateScope())
-// {
-//     var db = scope.ServiceProvider.GetRequiredService<DataContext>();
-//     db.Database.Migrate();
-// }
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    var db = services.GetRequiredService<DataContext>();
+
+    try
+    {
+        logger.LogInformation("Checking database state...");
+
+        // Check if database exists
+        if (!db.Database.CanConnect())
+        {
+            logger.LogInformation("Database doesn't exist - creating and migrating...");
+            db.Database.Migrate();
+        }
+        else
+        {
+            // Database exists - check for pending migrations
+            var pendingMigrations = db.Database.GetPendingMigrations().ToList();
+            if (pendingMigrations.Any())
+            {
+                logger.LogInformation("Applying {Count} pending migrations: {Migrations}",
+                    pendingMigrations.Count, string.Join(", ", pendingMigrations));
+                db.Database.Migrate();
+            }
+            else
+            {
+                logger.LogInformation("Database is up-to-date");
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error during database migration");
+        throw; // Optional: remove this if you want the app to continue without migrations
+    }
+}
 
 // app.MapIdentityApi<IdentityUser>();
 app.UseCors("AllowLocalhostWithCredentials");
