@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AuthDemo.Data;
 using DLTAPI.DTOs;
+using DLTAPI.interfaces;
 using DLTAPI.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,12 +17,14 @@ namespace DLTAPI.controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signinManager;
+        private readonly IEmailRepo _emailRepo;
         private readonly DataContext _context;
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, DataContext context)
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, DataContext context, IEmailRepo emailRepo)
         {
             _userManager = userManager;
             _context = context;
             _signinManager = signInManager;
+            _emailRepo = emailRepo;
         }
 
         [HttpPost("login")]
@@ -62,38 +65,34 @@ namespace DLTAPI.controllers
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             if (!ModelState.IsValid)
-                return BadRequest("Invalid login data.");
+                return BadRequest("Invalid registration data.");
 
-            try
+            var existingEmail = await _userManager.FindByEmailAsync(registerDto.Email);
+            if (existingEmail != null)
+                return BadRequest("Email already exists.");
+
+            var isVerified = await _emailRepo.IsEmailVerifiedAsync(registerDto.Email);
+            if (!isVerified)
+                return BadRequest("Email is not verified. Please verify it before registering.");
+
+            var user = new ApplicationUser
             {
-                var existingEmail = await _userManager.FindByEmailAsync(registerDto.Email);
-                if (existingEmail != null)
-                    return BadRequest("Email exists already");
+                UserName = registerDto.UserName,
+                DateOfBirth = registerDto.DateOfBirth,
+                Email = registerDto.Email,
+                EmailConfirmed = true
+            };
 
-                var user = new ApplicationUser
-                {
-                    UserName = registerDto.UserName,
-                    FirstName = registerDto.FirstName,
-                    LastName = registerDto.LastName,
-                    DateOfBirth = registerDto.DateOfBirth,
-                    Email = registerDto.Email,
-                    EmailConfirmed = false
-                };
-
-                var result = await _userManager.CreateAsync(user, registerDto.Password);
-                if (!result.Succeeded)
-                {
-                    var errors = result.Errors.Select(e => e.Description).ToList();
-                    return BadRequest(errors);
-                }
-
-                return Ok("User registered successfully.");
-            }
-            catch (Exception ex)
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            if (!result.Succeeded)
             {
-                Console.WriteLine("Exception while registering user: ", ex);
-                throw;
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest(errors);
             }
+
+            await _emailRepo.ClearVerificationAsync(registerDto.Email);
+
+            return Ok("User registered successfully.");
         }
 
         [HttpPost("logout")]

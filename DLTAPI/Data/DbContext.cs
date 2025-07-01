@@ -16,6 +16,7 @@ public class DataContext : IdentityDbContext<ApplicationUser>
     public DbSet<UserAnswerSubmission> UserAnswerSubmissions { get; set; }
     public DbSet<ExamSession> ExamSessions { get; set; }
     public DbSet<VerificationCode> VerificationCodes { get; set; }
+    public DbSet<VerifiedEmail> VerifiedEmails { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

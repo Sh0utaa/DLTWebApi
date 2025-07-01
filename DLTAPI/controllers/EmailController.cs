@@ -29,40 +29,18 @@ namespace DLTAPI.controllers
         [AllowAnonymous]
         public async Task<IActionResult> SendCode([FromBody] string toEmail)
         {
-            var code = new Random().Next(100000, 999999).ToString();
-
-            var verificationCode = new VerificationCode
-            {
-                Email = toEmail,
-                Code = code,
-                Type = VerificationType.EmailConfirmation,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(10)
-            };
-
-            _context.VerificationCodes.Add(verificationCode);
-            await _context.SaveChangesAsync();
-
-            var subject = "DLT Verification Code";
-            var body = $"<h1> Your Verification Code: {code} </h1>";
-            await _emailRepo.SendEmailAsync(toEmail, subject, body, true);
+            await _emailRepo.SendVerificationCode(toEmail);
             return Ok("Verification code sent!");
         }
 
         [HttpPost("verify-code")]
         public async Task<IActionResult> VerifyCode([FromBody] CodeVerifyRequest req)
         {
-            var codeRecord = await _context.VerificationCodes
-                .Where(vc => vc.Email == req.Email && vc.Code == req.Code)
-                .OrderByDescending(vc => vc.ExpiresAt)
-                .FirstOrDefaultAsync();
-
-            if (codeRecord == null || codeRecord.ExpiresAt < DateTime.UtcNow)
+            var success = await _emailRepo.VerifyCodeAsync(req.Email, req.Code);
+            if (!success)
                 return BadRequest("Invalid or expired code.");
 
-            _context.VerificationCodes.Remove(codeRecord);
-            await _context.SaveChangesAsync();
-
-            return Ok("Code verified");
+            return Ok("Email verified");
         }
 
         [HttpPost("send-password-reset-code")]

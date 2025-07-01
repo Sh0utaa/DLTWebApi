@@ -25,8 +25,6 @@ namespace DLTAPI.Helper
                 adminUser = new ApplicationUser
                 {
                     UserName = "Shotesko",
-                    FirstName = "Shota",
-                    LastName = "Tevdorashvili",
                     DateOfBirth = new DateOnly(2006, 12, 12),
                     Email = adminEmail,
                     EmailConfirmed = true
