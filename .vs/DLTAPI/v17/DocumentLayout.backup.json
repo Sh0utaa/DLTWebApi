@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Shotesko\\Desktop\\DLT\\DLTAPI\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{B19F8F94-12B2-4756-B65E-E0702D670F61}|DLTAPI\\DLTAPI.csproj|c:\\users\\shotesko\\desktop\\dlt\\dltapi\\dltapi\\.env||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{B19F8F94-12B2-4756-B65E-E0702D670F61}|DLTAPI\\DLTAPI.csproj|solutionrelative:dltapi\\.env||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{B19F8F94-12B2-4756-B65E-E0702D670F61}|DLTAPI\\DLTAPI.csproj|c:\\users\\shotesko\\desktop\\dlt\\dltapi\\dltapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B19F8F94-12B2-4756-B65E-E0702D670F61}|DLTAPI\\DLTAPI.csproj|solutionrelative:dltapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -23,6 +27,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": ".env",
+              "DocumentMoniker": "C:\\Users\\Shotesko\\Desktop\\DLT\\DLTAPI\\DLTAPI\\.env",
+              "RelativeDocumentMoniker": "DLTAPI\\.env",
+              "ToolTip": "C:\\Users\\Shotesko\\Desktop\\DLT\\DLTAPI\\DLTAPI\\.env",
+              "RelativeToolTip": "DLTAPI\\.env",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-06-29T08:32:45.714Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Shotesko\\Desktop\\DLT\\DLTAPI\\DLTAPI\\Program.cs",
               "RelativeDocumentMoniker": "DLTAPI\\Program.cs",
@@ -30,8 +47,7 @@
               "RelativeToolTip": "DLTAPI\\Program.cs",
               "ViewState": "AgIAALoAAAAAAAAAAAAuwMsAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-29T08:23:03.065Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-29T08:23:03.065Z"
             }
           ]
         }

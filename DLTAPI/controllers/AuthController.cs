@@ -43,7 +43,7 @@ namespace DLTAPI.controllers
 
                 if (result.Succeeded)
                 {
-                    return Ok("Login successful");
+                    return Ok(new { message = "Login successful" });
                 }
                 else if (result.IsLockedOut)
                 {
@@ -92,7 +92,7 @@ namespace DLTAPI.controllers
 
             await _emailRepo.ClearVerificationAsync(registerDto.Email);
 
-            return Ok("User registered successfully.");
+            return Ok(new { message = "User registered successfully." });
         }
 
         [HttpPost("logout")]
@@ -194,7 +194,7 @@ namespace DLTAPI.controllers
             _context.VerificationCodes.Remove(codeRecord);
             await _context.SaveChangesAsync();
 
-            return Ok("Password has been reset successfully.");
+            return Ok(new { message = "Password has been reset successfully." });
         }
     }
 }

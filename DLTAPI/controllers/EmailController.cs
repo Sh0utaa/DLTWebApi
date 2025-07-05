@@ -30,7 +30,7 @@ namespace DLTAPI.controllers
         public async Task<IActionResult> SendCode([FromBody] string toEmail)
         {
             await _emailRepo.SendVerificationCode(toEmail);
-            return Ok("Verification code sent!");
+            return Ok(new { message = "Verification code sent!" });
         }
 
         [HttpPost("verify-code")]
@@ -40,7 +40,7 @@ namespace DLTAPI.controllers
             if (!success)
                 return BadRequest("Invalid or expired code.");
 
-            return Ok("Email verified");
+            return Ok(new { message = "Email Verified" });
         }
 
         [HttpPost("send-password-reset-code")]
@@ -52,7 +52,7 @@ namespace DLTAPI.controllers
             if (user == null)
             {
                 // For security reasons, don't reveal if user doesn't exist
-                return Ok("If an account with this email exists, a reset code has been sent.");
+                return Ok(new { message = "If an account with this email exists, a reset code has been sent." });
             }
 
             // Generate and save code
@@ -116,7 +116,7 @@ namespace DLTAPI.controllers
             try
             {
                 await _emailRepo.SendToShotaAsync(email);
-                return Ok("Email sent to Shota!");
+                return Ok(new { message = "Email sent to Shota!" });
             }
             catch (Exception e)
             {
