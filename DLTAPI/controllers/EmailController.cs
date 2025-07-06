@@ -5,7 +5,6 @@ using DLTAPI.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 
 namespace DLTAPI.controllers
@@ -27,9 +26,9 @@ namespace DLTAPI.controllers
 
         [HttpPost("send-verification-code")]
         [AllowAnonymous]
-        public async Task<IActionResult> SendCode([FromBody] string toEmail)
+        public async Task<IActionResult> SendCode([FromBody] EmailRequest EmailRequest)
         {
-            await _emailRepo.SendVerificationCode(toEmail);
+            await _emailRepo.SendVerificationCode(EmailRequest.Email);
             return Ok(new { message = "Verification code sent!" });
         }
 
@@ -45,10 +44,10 @@ namespace DLTAPI.controllers
 
         [HttpPost("send-password-reset-code")]
         [AllowAnonymous]
-        public async Task<IActionResult> SendPasswordResetCode([FromBody] string email)
+        public async Task<IActionResult> SendPasswordResetCode([FromBody] EmailRequest emailRequest)
         {
             // Check if user exists
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(emailRequest.Email);
             if (user == null)
             {
                 // For security reasons, don't reveal if user doesn't exist
@@ -60,7 +59,7 @@ namespace DLTAPI.controllers
 
             var verificationCode = new VerificationCode
             {
-                Email = email,
+                Email = emailRequest.Email,
                 Code = code,
                 Type = VerificationType.PasswordReset,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(10)
@@ -68,7 +67,7 @@ namespace DLTAPI.controllers
 
             // Remove any existing reset codes for this email
             var existingCodes = await _context.VerificationCodes
-                .Where(vc => vc.Email == email && vc.Type == VerificationType.PasswordReset)
+                .Where(vc => vc.Email == emailRequest.Email && vc.Type == VerificationType.PasswordReset)
                 .ToListAsync();
 
             _context.VerificationCodes.RemoveRange(existingCodes);
@@ -80,7 +79,7 @@ namespace DLTAPI.controllers
             var body = $"<h1>Your Password Reset Code: {code}</h1>" +
                     "<p>This code will expire in 10 minutes.</p>";
 
-            await _emailRepo.SendEmailAsync(email, subject, body, true);
+            await _emailRepo.SendEmailAsync(emailRequest.Email, subject, body, true);
 
             return Ok("If an account with this email exists, a reset code has been sent.");
         }

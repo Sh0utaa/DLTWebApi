@@ -4,8 +4,8 @@
 
 # Rider and VS Code folders
 .idea/
-.vscode/
-.vs/
+DLTAPI/.vs
+DLTAPI/.vscode
 
 # User-specific files
 *.user
