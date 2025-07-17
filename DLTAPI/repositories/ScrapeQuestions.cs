@@ -33,9 +33,15 @@ namespace DLTAPI.repositories
         {
             if (string.IsNullOrWhiteSpace(input)) return "";
 
-            input = Regex.Replace(input, @"^\d+\s*", "");
+            input = input.Trim();
 
-            return Regex.Replace(input, @"\s+", " ").Trim();
+            // Remove first digit and any following whitespace
+            input = Regex.Replace(input, @"^\d\s*", "");
+
+            // Normalize all whitespace (including newlines) into single spaces
+            input = Regex.Replace(input, @"\s+", " ");
+
+            return input.Trim();
         }
 
         public async Task<List<List<Question>>> ScrapeAllQuestionsAsync(string language)

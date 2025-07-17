@@ -60,7 +60,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     // Security Settings
     options.Cookie.Name = ".AspNetCore.Identity.Application";
-    options.Cookie.Domain = "shotatevdorashvili.com";
+    // options.Cookie.Domain = "shotatevdorashvili.com";
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -137,7 +137,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("DevelopmentCors", policy =>
     {
         policy.WithOrigins(
-                "https://localhost:4200",
+                "http://localhost:4200",
+                "http://localhost:5279",
                 "https://shotatevdorashvili.com"
               )
               .AllowAnyHeader()
@@ -148,8 +149,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("ProductionCors", policy =>
     {
         policy.WithOrigins(
-            "https://shotatevdorashvili.com",
-            "https://localhost:4200"
+            "https://shotatevdorashvili.com"
             )
               .AllowAnyHeader()
               .AllowAnyMethod()
@@ -232,7 +232,7 @@ app.MapOpenApi();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/openapi/v1.json", "v1");
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
 });
 
 // Custom error responses

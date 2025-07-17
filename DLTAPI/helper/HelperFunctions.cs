@@ -1,5 +1,6 @@
 using DLTAPI.models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Identity.Client;
 
 namespace DLTAPI.Helper
 {
@@ -12,7 +13,7 @@ namespace DLTAPI.Helper
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
             const string adminEmail = "shota.tevdorashvili@gau.edu.ge";
-            const string adminPassword = "Admin123";
+            const string adminPassword = "Admin!123__";
 
             if (!await roleManager.RoleExistsAsync("Admin"))
             {
@@ -35,6 +36,23 @@ namespace DLTAPI.Helper
                 {
                     await userManager.AddToRoleAsync(adminUser, "Admin");
                 }
+            }
+
+            const string publicEmail = "generic@generic";
+            const string publicPassword = "Generic!123__";
+
+            var publicUser = await userManager.FindByEmailAsync(publicEmail);
+            if (publicUser == null)
+            {
+                publicUser = new ApplicationUser
+                {
+                    UserName = "Public",
+                    DateOfBirth = new DateOnly(2000, 1, 1),
+                    Email = publicEmail,
+                    EmailConfirmed = true,
+                };
+                var result = await userManager.CreateAsync(publicUser, publicPassword);
+
             }
         }
 
