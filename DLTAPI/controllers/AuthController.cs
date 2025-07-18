@@ -57,7 +57,7 @@ namespace DLTAPI.controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return StatusCode(500, "An error occurred during login.");
+                return StatusCode(500, "An error occurred during login.", ex);
             }
         }
 
