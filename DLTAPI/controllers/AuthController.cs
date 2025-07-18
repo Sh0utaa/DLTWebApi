@@ -57,42 +57,50 @@ namespace DLTAPI.controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return StatusCode(500, "An error occurred during login.", ex);
+                return StatusCode(500, $"An error occurred during login. {ex}");
             }
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid registration data.");
-
-            var existingEmail = await _userManager.FindByEmailAsync(registerDto.Email);
-            if (existingEmail != null)
-                return BadRequest("Email already exists.");
-
-            var isVerified = await _emailRepo.IsEmailVerifiedAsync(registerDto.Email);
-            if (!isVerified)
-                return BadRequest("Email is not verified. Please verify it before registering.");
-
-            var user = new ApplicationUser
+            try
             {
-                UserName = registerDto.UserName,
-                DateOfBirth = registerDto.DateOfBirth,
-                Email = registerDto.Email,
-                EmailConfirmed = true
-            };
+                if (!ModelState.IsValid)
+                    return BadRequest("Invalid registration data.");
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
-            if (!result.Succeeded)
-            {
-                var errors = result.Errors.Select(e => e.Description).ToList();
-                return BadRequest(errors);
+                var existingEmail = await _userManager.FindByEmailAsync(registerDto.Email);
+                if (existingEmail != null)
+                    return BadRequest("Email already exists.");
+
+                var isVerified = await _emailRepo.IsEmailVerifiedAsync(registerDto.Email);
+                if (!isVerified)
+                    return BadRequest("Email is not verified. Please verify it before registering.");
+
+                var user = new ApplicationUser
+                {
+                    UserName = registerDto.UserName,
+                    DateOfBirth = registerDto.DateOfBirth,
+                    Email = registerDto.Email,
+                    EmailConfirmed = true
+                };
+
+                var result = await _userManager.CreateAsync(user, registerDto.Password);
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description).ToList();
+                    return BadRequest(errors);
+                }
+
+                await _emailRepo.ClearVerificationAsync(registerDto.Email);
+
+                return Ok(new { message = "User registered successfully." });
             }
-
-            await _emailRepo.ClearVerificationAsync(registerDto.Email);
-
-            return Ok(new { message = "User registered successfully." });
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, $"An error occurred during login. {ex}");
+            }
         }
 
         [HttpPost("logout")]
