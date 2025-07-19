@@ -151,7 +151,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("ProductionCors", policy =>
     {
         policy.WithOrigins(
-            "https://shotatevdorashvili.com"
+            "https://shotatevdorashvili.com",
+            "https://dlt-api.shotatevdorashvili.com",
+            "https://dlt.shotatevdorashvili.com"
             )
               .AllowAnyHeader()
               .AllowAnyMethod()
