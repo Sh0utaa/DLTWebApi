@@ -49,7 +49,6 @@ builder.Services.AddDbContext<DataContext>(options =>
 {
     var connection = builder.Configuration.GetConnectionString("DefaultConnection");
     options.UseSqlServer(connection);
-    Console.WriteLine($"Using connection string: {connection}");
 });
 
 // Identity Configuration
