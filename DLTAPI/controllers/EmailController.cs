@@ -16,6 +16,7 @@ namespace DLTAPI.controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailRepo _emailRepo;
         private readonly DataContext _context;
+        var logger = services.GetRequiredService<ILogger<Program>>();
 
         public EmailController(IEmailRepo emailRepo, DataContext context, UserManager<ApplicationUser> userManager)
         {
@@ -120,6 +121,7 @@ namespace DLTAPI.controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                logger.LogError(e);
                 throw;
             }
         }
