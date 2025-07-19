@@ -16,13 +16,19 @@ namespace DLTAPI.controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailRepo _emailRepo;
         private readonly DataContext _context;
-        var logger = services.GetRequiredService<ILogger<Program>>();
+        private readonly ILogger<EmailController> _logger;
 
-        public EmailController(IEmailRepo emailRepo, DataContext context, UserManager<ApplicationUser> userManager)
+        public EmailController(
+            IEmailRepo emailRepo,
+            DataContext context,
+            UserManager<ApplicationUser> userManager,
+            ILogger<EmailController> logger
+        )
         {
             _emailRepo = emailRepo;
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         [HttpPost("send-verification-code")]
@@ -121,7 +127,7 @@ namespace DLTAPI.controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                logger.LogError(e);
+                _logger.LogError(e, "Failed to send email to shota.");
                 throw;
             }
         }
