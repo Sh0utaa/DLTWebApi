@@ -19,12 +19,14 @@ namespace DLTAPI.controllers
         private readonly SignInManager<ApplicationUser> _signinManager;
         private readonly IEmailRepo _emailRepo;
         private readonly DataContext _context;
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, DataContext context, IEmailRepo emailRepo)
+        private readonly ILogger<AuthController> _logger;
+        public AuthController(ILogger<AuthController> logger, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, DataContext context, IEmailRepo emailRepo)
         {
             _userManager = userManager;
             _context = context;
             _signinManager = signInManager;
             _emailRepo = emailRepo;
+            _logger = logger;
         }
 
         [HttpPost("login")]
@@ -57,6 +59,7 @@ namespace DLTAPI.controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                _logger.LogError($"Error during login: {ex}");
                 return StatusCode(500, $"An error occurred during login. {ex}");
             }
         }
@@ -134,6 +137,33 @@ namespace DLTAPI.controllers
                 throw;
             }
 
+        }
+
+        [HttpGet("get-current-user")]
+        [Authorize(Policy = "AuthenticatedUser")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var name = User.FindFirstValue(ClaimTypes.Name);
+                var email = User.FindFirstValue(ClaimTypes.Email);
+
+                var returnableObj = new
+                {
+                    UserId = userId,
+                    Name = name,
+                    Email = email
+                };
+
+                return Ok(returnableObj);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                _logger.LogError($"error happened while getting user information: {ex}");
+                throw;
+            }
         }
 
         [HttpPost("confirm-email")]
