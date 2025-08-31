@@ -18,3 +18,5 @@ DLTAPI/.vscode
 *.pdb
 *.cache
 *.log
+
+appsettings.Development.json

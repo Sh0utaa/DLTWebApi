@@ -64,7 +64,7 @@ namespace DLTAPI.repositories
         {
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_settings.SenderEmail));
-            email.To.Add(MailboxAddress.Parse("shota@shotatevdorashvili.com"));
+            email.To.Add(MailboxAddress.Parse("stevdorashvili08@gmail.com"));
             email.Subject = mail.Subject;
 
             email.Body = new TextPart(MimeKit.Text.TextFormat.Text)

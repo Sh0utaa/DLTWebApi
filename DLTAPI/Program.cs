@@ -48,7 +48,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddDbContext<DataContext>(options =>
 {
     var connection = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseSqlServer(connection);
+    options.UseNpgsql(connection);
 });
 
 // Identity Configuration
