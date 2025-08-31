@@ -1,6 +1,5 @@
 using DLTAPI.models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Identity.Client;
 
 namespace DLTAPI.Helper
 {
@@ -66,6 +65,20 @@ namespace DLTAPI.Helper
 
             public Task SendPasswordResetCodeAsync(IdentityUser user, string email, string resetCode)
                 => Task.CompletedTask;
+        }
+
+        public static string ParseRailwayConnectionString(string railwayUrl)
+        {
+            if (railwayUrl.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase))
+            {
+                var uri = new Uri(railwayUrl);
+                var userInfo = uri.UserInfo.Split(':');
+                var user = userInfo[0];
+                var password = userInfo.Length > 1 ? userInfo[1] : "";
+                
+                return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={user};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+            }
+            return railwayUrl;
         }
     }
 }

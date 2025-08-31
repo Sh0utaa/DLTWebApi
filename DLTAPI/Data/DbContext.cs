@@ -46,7 +46,9 @@ public class DataContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(u => u.SessionId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<UserAnswerSubmission>().Property(x => x.SubmittedAt).HasDefaultValueSql("GETDATE()");
+        // USE FOR MS SQL SERVER
+        // builder.Entity<UserAnswerSubmission>().Property(x => x.SubmittedAt).HasDefaultValueSql("GETDATE()");
+        builder.Entity<UserAnswerSubmission>().Property(x => x.SubmittedAt).HasDefaultValueSql("NOW()");
 
         builder.Entity<ExamSession>()
             .HasMany(s => s.Answers)

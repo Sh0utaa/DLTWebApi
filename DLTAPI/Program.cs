@@ -47,8 +47,20 @@ builder.Services.Configure<IdentityOptions>(options =>
 // Database Context
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    var connection = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseNpgsql(connection);
+    // var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+    // options.UseNpgsql(connection);
+    var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    }
+    else
+    {
+        connectionString = HelperFunctions.ParseRailwayConnectionString(connectionString);
+    }
+
+    options.UseNpgsql(connectionString);
 });
 
 // Identity Configuration
