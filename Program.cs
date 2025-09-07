@@ -150,9 +150,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("DevelopmentCors", policy =>
     {
         policy.WithOrigins(
-                "http://localhost:4200",
-                "https://localhost:4200",
                 "http://localhost:5279",
+                "http://localhost:5173",
                 "https://shotatevdorashvili.com"
               )
               .AllowAnyHeader()
@@ -166,7 +165,7 @@ builder.Services.AddCors(options =>
             "https://shotatevdorashvili.com",
             "https://dlt-api.shotatevdorashvili.com",
             "https://dlt.shotatevdorashvili.com",
-            "https://localhost:4200"
+            "http://localhost:5173"
             )
               .AllowAnyHeader()
               .AllowAnyMethod()
