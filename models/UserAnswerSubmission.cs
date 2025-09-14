@@ -12,7 +12,7 @@ namespace DLTAPI.models
         public int AnswerId { get; set; }
         public int SessionId { get; set; }
         public bool IsCorrect { get; set; }
-        public DateTime SubmittedAt { get; set; } = DateTime.Now;
+        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
 
 
         [JsonIgnore]
